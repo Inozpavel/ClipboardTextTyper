@@ -1,0 +1,8 @@
+.vs/
+obj/
+bin/
+Properties/
+App.*
+*.csproj
+*.user
+*.sln
