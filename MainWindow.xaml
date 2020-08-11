@@ -7,49 +7,65 @@
         mc:Ignorable="d"
         Title="ClipboardTextTyper" Height="450" Width="800"
         WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="NoResize">
-    <Window.Resources>
-        <Style x:Key="WindowControlButton" TargetType="Image">
-            <Style.Setters>
-                <Setter Property="VerticalAlignment" Value="Top"/>
-                <Setter Property="HorizontalAlignment" Value="Right"/>
-            </Style.Setters>
-        </Style>
-    </Window.Resources>
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Loaded">
+            <BeginStoryboard>
+                <Storyboard>
+                    <DoubleAnimation From="0" To="100" Storyboard.TargetProperty="Opacity" Duration="0:0:1"/>
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </Window.Triggers>
     <Grid Background="#FF2D2D30">
         <Grid.RowDefinitions>
-            <RowDefinition Height="30" />
+            <RowDefinition x:Name="UpperBar" Height="30"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" HorizontalAlignment="Stretch" Background="#FF252526" MouseLeftButtonDown="DragMoveApp">
-            <StackPanel.Resources>
-                <Style TargetType="Border" x:Key="NiceBorder">
+        <!--Верхняя рамка с кнопками управления окном-->
+        <DockPanel HorizontalAlignment="Stretch" Background="#FF252526" MouseLeftButtonDown="DragMoveApp">
+            <DockPanel.Resources>
+                <Style TargetType="Border" x:Key="BorderControlButton">
                     <Setter Property="BorderThickness" Value="0"/>
                     <Setter Property="BorderBrush" Value="White"/>
-                    <Setter Property="CornerRadius" Value="2"/>
+                    <Setter Property="CornerRadius" Value="3"/>
+                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                    <Setter Property="Width" Value="{Binding ElementName=UpperBar, Path=Height}"/>
                     <Style.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="BorderThickness" Value="1"/>
                         </Trigger>
                     </Style.Triggers>
                 </Style>
-            </StackPanel.Resources>
-            <Border Style="{StaticResource NiceBorder}">
-                <Image Name ="bExit" MouseLeftButtonDown="CloseApp" ToolTip="Выйти">
+            </DockPanel.Resources>
+            <Label Name ="LCaption" Content="ClipboardTextTyper" DockPanel.Dock="Left" Foreground="White"/>
+            <Border Style="{StaticResource BorderControlButton}" DockPanel.Dock="Right">
+                <Image ToolTip="Выйти" MouseLeftButtonDown="CloseApp">
                     <Image.Style>
-                        <Style TargetType="Image" BasedOn="{StaticResource WindowControlButton}">
+                        <Style TargetType="Image">
                             <Setter Property="Source" Value="Images/bExitNotSelected.png"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsMouseOver, ElementName=bExit}" Value="True">
+                                <Trigger Property="IsMouseOver" Value="True">
                                     <Setter Property="Source" Value="Images/bExitSelected.png"/>
-                                </DataTrigger>
+                                </Trigger>
                             </Style.Triggers>
                         </Style>
                     </Image.Style>
                 </Image>
             </Border>
-            <Border Style="{StaticResource NiceBorder}" Margin="1 0 0 0">
-                <Image Source="Images/bMinimizeNotSelected.png" MouseLeftButtonDown="MinimizeApp" ToolTip="Свернуть" Style="{StaticResource WindowControlButton}"/>
+            <Border  Style="{StaticResource BorderControlButton}" Margin="1 0 0 0" DockPanel.Dock="Right" >
+                <Image ToolTip="Свернуть" MouseLeftButtonDown="MinimizeApp">
+                    <Image.Style>
+                        <Style TargetType="Image">
+                            <Setter Property="Source" Value="Images/bMinimizeNotSelected.png"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Source" Value="Images/bMinimizeSelected.png"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
             </Border>
-        </StackPanel>
+        </DockPanel>
     </Grid>
 </Window>
