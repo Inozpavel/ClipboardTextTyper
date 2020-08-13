@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -9,6 +12,7 @@ namespace WpfClipboardTextTyper
     /// </summary>
     public partial class MainWindow : Window
     {
+        internal bool isAnimanting = false;
         public MainWindow()
         {
             InitializeComponent();
@@ -31,6 +35,28 @@ namespace WpfClipboardTextTyper
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             (sender as Slider).Value = Math.Round(e.NewValue);
+        }
+
+        private void TBCaption_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            if (!isAnimanting)
+            {
+                isAnimanting = true;
+                Task.Run(() =>
+                {
+                    string caption = "";
+                    Dispatcher.Invoke(() => caption = TBCaption.Text);
+                    int i = 1;
+                    while (i <= caption.Length)
+                    {
+                        Dispatcher.Invoke(() => TBCaption.Text = string.Join("", caption.Take(i).ToArray()));
+                        i++;
+                        Thread.Sleep(200);
+                    }
+                    Thread.Sleep(500);
+                    isAnimanting = false;
+                });
+            }
         }
     }
 }
