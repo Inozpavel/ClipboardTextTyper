@@ -135,7 +135,77 @@
                     <TextBox FontSize="18" Grid.Row="2" Grid.Column="1" Height="30" Margin="10 10 10 0" VerticalAlignment="Top" Foreground="White" Background="#FF454547" VerticalContentAlignment="Center"/>
                 </Grid>
             </GroupBox>
-            
+            <!--Панель с клавишами-->
+            <GroupBox Header="Клавиши" Foreground="White" Grid.Column="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.Resources>
+                        <Style  x:Key="Key" TargetType="TextBlock">
+                            <Setter Property="Grid.Column" Value="1"/>
+                            <Setter Property="TextAlignment" Value="Center"/>
+                            <Setter Property="FontSize" Value="16"/>
+                        </Style>
+                        <Style x:Key="Headling" TargetType="TextBlock">
+                            <Setter Property="FontSize" Value="22"/>
+                            <Setter Property="TextAlignment" Value="Center"/>
+                            <Setter Property="Grid.ColumnSpan" Value="2"/>
+                        </Style>
+                        <Style x:Key="KeyDescription" TargetType="TextBlock">
+                            <Setter Property="FontSize" Value="15"/>
+                            <Setter Property="TextAlignment" Value="Left"/>
+                        </Style>
+                    </Grid.Resources>
+                    <!--Запуск копирования-->
+                    <TextBlock Style="{StaticResource Headling}">
+                        <Run Text="Запуск копирования"/>
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource KeyDescription}" Grid.Row="1">
+                        <Run Text="Начать печать"/>
+                        <LineBreak/>
+                        <Run Text="Завершить печать"/>
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Key}" Grid.Row="1">
+                        <Run Text="Shift"/>
+                        <Run Text="+"/>
+                        <Run Text="F2"/> 
+                        <LineBreak/>
+                        <Run Text="Shift"/>
+                        <Run Text="+"/>
+                        <Run Text="F4"/>
+                    </TextBlock>
+                    <!--Управление печатью-->
+                    <TextBlock Grid.Row="2" Style="{StaticResource Headling}">
+                        <Run Text="Управление печатью"/>
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource KeyDescription}" Grid.Row="3">
+                        <Run Text="Приостановить печать для выбора функции"/>
+                        <LineBreak/>
+                        <Run Text="Остановить печать"/>
+                        <LineBreak/>
+                        <Run Text="Продолжить печать"/>
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Key}" Grid.Row="3">
+                        <Run Text="Shift"/>
+                        <LineBreak/>
+                        <Run Text="Shift"/>
+                        <Run Text="+"/>
+                        <Run Text="F12"/>
+                        <LineBreak/>
+                        <Run Text="Shift"/>
+                        <Run Text="+"/>
+                        <Run Text="F12"/>
+                    </TextBlock>
+                </Grid>
+            </GroupBox>
         </Grid>
     </Grid>
 </Window>

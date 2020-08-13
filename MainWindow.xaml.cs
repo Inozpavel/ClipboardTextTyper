@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace WpfClipboardTextTyper
 {
@@ -24,6 +26,11 @@ namespace WpfClipboardTextTyper
         private void DragMoveApp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             DragMove();
+        }
+
+        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            (sender as Slider).Value = Math.Round(e.NewValue);
         }
     }
 }
