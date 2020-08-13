@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfClipboardTextTyper"
         mc:Ignorable="d"
-        Title="ClipboardTextTyper" Height="450" Width="800"
+        Title="ClipboardTextTyper" Height="219.833" Width="835"
         WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="NoResize">
     <Window.Triggers>
         <EventTrigger RoutedEvent="Loaded">
@@ -19,7 +19,7 @@
     <Grid Background="#FF2D2D30">
         <Grid.RowDefinitions>
             <RowDefinition x:Name="UpperBar" Height="30"/>
-            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <!--Верхняя рамка с кнопками управления окном-->
         <DockPanel HorizontalAlignment="Stretch" Background="#FF252526" MouseLeftButtonDown="DragMoveApp">
@@ -33,13 +33,25 @@
                     <Setter Property="Cursor" Value="Hand"/>
                     <Setter Property="DockPanel.Dock" Value="Right"/>
                     <Style.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="BorderThickness" Value="1"/>
-                        </Trigger>
+                        <EventTrigger RoutedEvent="MouseEnter">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ThicknessAnimation From="0" To="2" Duration="0:0:0.5" Storyboard.TargetProperty="BorderThickness"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="MouseLeave">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ThicknessAnimation From="2" To="0" Duration="0:0:0.5" Storyboard.TargetProperty="BorderThickness"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        
                     </Style.Triggers>
                 </Style>
             </DockPanel.Resources>
-            <Label Name ="LCaption" Content="ClipboardTextTyper" DockPanel.Dock="Left" Foreground="White"/>
+            <TextBlock Name="TBCaption" Text="ClipboardTextTyper" DockPanel.Dock="Left" Foreground="White" TextAlignment="Center" FontSize="18" MouseEnter="TBCaptionMouseEnter"/>
             <Border Style="{StaticResource BorderControlButton}">
                 <Image ToolTip="Выйти" MouseLeftButtonDown="CloseApp">
                     <Image.Style>
@@ -54,7 +66,7 @@
                     </Image.Style>
                 </Image>
             </Border>
-            <Border  Style="{StaticResource BorderControlButton}" Margin="1 0 0 0">
+            <Border Style="{StaticResource BorderControlButton}" Margin="1 0 0 0">
                 <Image ToolTip="Свернуть" MouseLeftButtonDown="MinimizeApp">
                     <Image.Style>
                         <Style TargetType="Image">
@@ -73,7 +85,7 @@
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <!--Панель с настройками-->
             <GroupBox Header="Настройки" Foreground="White">
@@ -92,6 +104,20 @@
                                             <Trigger Property="IsChecked" Value="True">
                                                 <Setter TargetName="AroundBorder" Property="BorderBrush" Value="Aqua"/>
                                             </Trigger>
+                                            <EventTrigger RoutedEvent="MouseEnter">
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation From="13" To="14" Duration="0:0:0.2" Storyboard.TargetProperty="FontSize"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </EventTrigger>
+                                            <EventTrigger RoutedEvent="MouseLeave">
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation From="14" To="13" Duration="0:0:0.2" Storyboard.TargetProperty="FontSize"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </EventTrigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Setter.Value>
@@ -106,16 +132,16 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="45"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Label Content="Задержка при печати символа"/>
+                    <Label Content="Задержка при печати символа" FontSize="15"/>
                     <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <RadioButton GroupName="Delay" Style="{StaticResource CustomRadioButtons}" Content="Выключена" IsChecked="True" Grid.Column="1"/>
-                        <RadioButton Name="ShowInput" GroupName="Delay" Style="{StaticResource CustomRadioButtons}" Content ="Включена" Grid.Column="1" Margin="5 0 0 0"/>
+                        <RadioButton GroupName="Delay" Style="{StaticResource CustomRadioButtons}" Content="Выключена" IsChecked="True" Grid.Column="1" FontSize="13"/>
+                        <RadioButton Name="ShowInput" GroupName="Delay" Style="{StaticResource CustomRadioButtons}" Content ="Включена" Grid.Column="1" FontSize="13" Margin="5 0 0 0"/>
                     </StackPanel>
                     <StackPanel Grid.Column="1" Grid.Row="1">
                         <TextBlock Text="{Binding ElementName=Slider, Path=Value, StringFormat={}{0} мс}" Foreground="White" HorizontalAlignment="Center"/>
@@ -131,16 +157,16 @@
                             </Style>
                         </StackPanel.Style>
                     </StackPanel>
-                    <Label Content="Символы для удаления" Grid.Row="2"/>
-                    <TextBox FontSize="18" Grid.Row="2" Grid.Column="1" Height="30" Margin="10 10 10 0" VerticalAlignment="Top" Foreground="White" Background="#FF454547" VerticalContentAlignment="Center"/>
+                    <Label Content="Символы для удаления" FontSize="15" Grid.Row="2" VerticalAlignment="Center"/>
+                    <TextBox FontSize="18" Grid.Row="2" Grid.Column="1" Height="30" Margin ="10 0 10 0" VerticalAlignment="Center" Foreground="White" Background="#FF454547" VerticalContentAlignment="Center" MaxLength="16"/>
                 </Grid>
             </GroupBox>
             <!--Панель с клавишами-->
-            <GroupBox Header="Клавиши" Foreground="White" Grid.Column="1">
+            <GroupBox Header="Клавиши" Foreground="White" Grid.Column="1" Margin="1 0 0 0">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -153,6 +179,7 @@
                             <Setter Property="Grid.Column" Value="1"/>
                             <Setter Property="TextAlignment" Value="Center"/>
                             <Setter Property="FontSize" Value="16"/>
+                            <Setter Property="Margin" Value="10 0 10 0"/>
                         </Style>
                         <Style x:Key="Headling" TargetType="TextBlock">
                             <Setter Property="FontSize" Value="22"/>
