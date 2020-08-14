@@ -13,6 +13,7 @@ namespace WpfClipboardTextTyper
     /// </summary>
     public partial class MainWindow : Window
     {
+        static Settings userSettings;
         internal bool isAnimanting = false;
         internal DoubleAnimation showHalfTimeInput = new DoubleAnimation(0, 0.6, new Duration(new TimeSpan(0, 0, 0, 0, 600)));
         internal DoubleAnimation showTimeInput = new DoubleAnimation(0.6, 1, new Duration(new TimeSpan(0, 0, 0, 0, 300)));
@@ -20,7 +21,11 @@ namespace WpfClipboardTextTyper
         internal DoubleAnimation hideTimeInput = new DoubleAnimation(0.6, 0, new Duration(new TimeSpan(0, 0, 0, 0, 300)));
         public MainWindow()
         {
+            userSettings = Settings.LoadSettings() ?? new Settings();
+            uint sliderTime = userSettings.DelayTime;
             InitializeComponent();
+            DataContext = userSettings;
+            Slider.Value = sliderTime;
             showHalfTimeInput.Completed += new EventHandler((x, y) => TimeInput.BeginAnimation(OpacityProperty, showTimeInput));
             hideHalfTimeInput.Completed += new EventHandler((x, y) => TimeInput.BeginAnimation(OpacityProperty, hideTimeInput));
         }
@@ -41,7 +46,8 @@ namespace WpfClipboardTextTyper
 
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            (sender as Slider).Value = Math.Round(e.NewValue);
+            Slider.Value = Math.Round(e.NewValue);
+            Settings.SaveSetting(userSettings);
         }
 
         private void TBCaptionMouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
@@ -68,26 +74,24 @@ namespace WpfClipboardTextTyper
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            HideTimeInput.IsChecked = true;
+            HideTimeInput.IsChecked = !userSettings.ShouldDelayBe;
+            ShowTimeInput.IsChecked = userSettings.ShouldDelayBe;
             TimeInput.Opacity = (HideTimeInput.IsChecked ?? true ? 0 : 1);
-        }
-
-        private void AroundBorder_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            //if ((sender as Border).IsMouseOver)
-                VisualStateManager.GoToState(sender as Border, "MouseEnter", false);
-            //else
-                //VisualStateManager.GoToState(sender as Border, "MouseLeave", false);
         }
 
         private void ShowTimeInput_Checked(object sender, RoutedEventArgs e)
         {
-            Storyboard storyboard = new Storyboard();
             if ((sender as RadioButton).IsChecked ?? false)
                 TimeInput.BeginAnimation(OpacityProperty, showHalfTimeInput);
             else
                 TimeInput.BeginAnimation(OpacityProperty, hideHalfTimeInput);
 
+            Settings.SaveSetting(userSettings);
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Settings.SaveSetting(userSettings);
         }
     }
 }
