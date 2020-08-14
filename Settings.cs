@@ -42,11 +42,25 @@ namespace WpfClipboardTextTyper
                 MessageBox.Show("Не получилось сохранить настройки", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
         public static Settings LoadSettings()
         {
-            if (File.Exists(settingsFilePath) == false)
+            try
+            {
+                return JsonConvert.DeserializeObject<Settings>(File.ReadAllText(settingsFilePath));
+            }
+            catch (FileNotFoundException)
+            {
+                MessageBox.Show("Файл с настройками не найден, будут использованы настройки по умолчанию",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Information);
                 return null;
-            return JsonConvert.DeserializeObject<Settings>(File.ReadAllText(settingsFilePath));
+            }
+            catch
+            {
+                MessageBox.Show("Не удалось загрузить настройки, будут использованы настройки по умолчанию",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
+            }
         }
     }
 
