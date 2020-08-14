@@ -6,4 +6,5 @@ App.*
 *.csproj
 *.user
 *.sln
+*.config
 
