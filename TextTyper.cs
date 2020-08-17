@@ -27,7 +27,7 @@ namespace WpfClipboardTextTyper
         private static bool _isShiftPressed = false;
         private static bool _isTyping = false;
         private static bool _shouldPause = false;
-        public static string BufferText { get; set; }
+        public static char[] BufferText { get; set; }
 
         public static Task HotkeysListening = new Task(() => ListenKeys());
 
@@ -37,7 +37,6 @@ namespace WpfClipboardTextTyper
             {
                 _isShiftPressed = IsKeysPressed(Keys.LShiftKey, null);
             }
-
         });
 
         [DllImport("User32.dll")]
@@ -52,10 +51,6 @@ namespace WpfClipboardTextTyper
                 while (_isShiftPressed || _shouldPause)
                 {
                 }
-                if (_specialKeys.Contains(symbol))
-                    SendKeys.SendWait($"{{{symbol}}}");
-                else
-                    SendKeys.SendWait(symbol.ToString());
 
                 if (_shouldAbort)
                 {
@@ -63,7 +58,12 @@ namespace WpfClipboardTextTyper
                     break;
                 }
 
-                Thread.Sleep(5);
+                if (_specialKeys.Contains(symbol))
+                    SendKeys.SendWait($"{{{symbol}}}");
+                else
+                    SendKeys.SendWait(symbol.ToString());
+                if (MainWindow.userSettings.ShouldDelayBe)
+                    Thread.Sleep(MainWindow.userSettings.DelayTime);
             }
             _isTyping = false;
         }
@@ -87,10 +87,24 @@ namespace WpfClipboardTextTyper
             }
         }
 
-
-        public static string GetBufferText()
+        public static char[] GetBufferText(Settings settings)
         {
-            return Regex.Replace(Clipboard.GetText(), @"\r", "");
+            string bufferText = Regex.Replace(Clipboard.GetText(TextDataFormat.Text), @"\r", "");
+
+            var spacesToDelete = Regex.Matches(settings.CharsToDelete, @"\s+")
+                .Cast<Match>().Select(x => x.Value).ToList();
+
+            var CharsToDelete = settings.CharsToDelete;
+            var commonSymbols = string.Join("", Regex.Split(CharsToDelete, @"\\\w")
+                .Where(x => !string.IsNullOrEmpty(x)).ToList())
+                .Select(x => x.ToString()).Where(x => x != " ").ToList();
+            var spesialSymbols = Regex.Matches(CharsToDelete, @"\\\w")
+                .Cast<Match>().Select(x => x.Value).ToList();
+
+            foreach (var symbol in commonSymbols.Union(spesialSymbols).Union(spacesToDelete))
+                bufferText = Regex.Replace(bufferText, symbol, "");
+            
+            return bufferText.ToArray();
         }
 
         private static bool IsKeysPressed(Keys key1, Keys? key2)
