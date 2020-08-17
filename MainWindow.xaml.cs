@@ -19,6 +19,7 @@ namespace WpfClipboardTextTyper
         internal DoubleAnimation showTimeInput = new DoubleAnimation(0.6, 1, new Duration(new TimeSpan(0, 0, 0, 0, 300)));
         internal DoubleAnimation hideHalfTimeInput = new DoubleAnimation(1, 0.6, new Duration(new TimeSpan(0, 0, 0, 0, 600)));
         internal DoubleAnimation hideTimeInput = new DoubleAnimation(0.6, 0, new Duration(new TimeSpan(0, 0, 0, 0, 300)));
+
         public MainWindow()
         {
             userSettings = Settings.LoadSettings() ?? new Settings();
@@ -44,7 +45,7 @@ namespace WpfClipboardTextTyper
             DragMove();
         }
 
-        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void SliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             Slider.Value = Math.Round(e.NewValue);
             Settings.SaveSetting(userSettings);
@@ -72,14 +73,16 @@ namespace WpfClipboardTextTyper
             }
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private void WindowLoaded(object sender, RoutedEventArgs e)
         {
             HideTimeInput.IsChecked = !userSettings.ShouldDelayBe;
             ShowTimeInput.IsChecked = userSettings.ShouldDelayBe;
-            TimeInput.Opacity = (HideTimeInput.IsChecked ?? true ? 0 : 1);
+            TimeInput.Opacity = HideTimeInput.IsChecked ?? true ? 0 : 1;
+            TextTyper.HotkeysListening.Start();
+            TextTyper.ListenShift.Start();
         }
 
-        private void ShowTimeInput_Checked(object sender, RoutedEventArgs e)
+        private void ShowTimeInputChecked(object sender, RoutedEventArgs e)
         {
             if ((sender as RadioButton).IsChecked ?? false)
                 TimeInput.BeginAnimation(OpacityProperty, showHalfTimeInput);
@@ -89,9 +92,15 @@ namespace WpfClipboardTextTyper
             Settings.SaveSetting(userSettings);
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void TextBoxTextChanged(object sender, TextChangedEventArgs e)
         {
             Settings.SaveSetting(userSettings);
         }
+
+        private void WindowActivated(object sender, EventArgs e)
+        {
+            TextTyper.BufferText = TextTyper.GetBufferText();
+        }
+
     }
 }
