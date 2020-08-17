@@ -4,32 +4,15 @@ using Newtonsoft.Json;
 
 namespace WpfClipboardTextTyper
 {
-    class Settings
+    internal class Settings
     {
         private static readonly string settingsFilePath = @".\Settings.json";
 
-        private bool shouldDelayBe = false;
+        public bool ShouldDelayBe { get; set; } = false;
 
-        public bool ShouldDelayBe
-        {
-            get { return shouldDelayBe; }
-            set { shouldDelayBe = value; }
-        }
+        public int DelayTime { get; set; } = 10;
 
-        private uint delayTime = 10;
-
-        public uint DelayTime
-        {
-            get { return delayTime; }
-            set { delayTime = value; }
-        }
-        private string charsToDelete = "";
-
-        public string CharsToDelete
-        {
-            get { return charsToDelete; }
-            set { charsToDelete = value; }
-        }
+        public string CharsToDelete { get; set; } = "";
 
         public static void SaveSetting(Settings settings)
         {
