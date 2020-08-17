@@ -12,8 +12,7 @@ namespace WpfClipboardTextTyper
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
-    {
-        static Settings userSettings;
+    {   internal static Settings userSettings;
         internal bool isAnimanting = false;
         internal DoubleAnimation showHalfTimeInput = new DoubleAnimation(0, 0.6, new Duration(new TimeSpan(0, 0, 0, 0, 600)));
         internal DoubleAnimation showTimeInput = new DoubleAnimation(0.6, 1, new Duration(new TimeSpan(0, 0, 0, 0, 300)));
@@ -23,7 +22,7 @@ namespace WpfClipboardTextTyper
         public MainWindow()
         {
             userSettings = Settings.LoadSettings() ?? new Settings();
-            uint sliderTime = userSettings.DelayTime;
+            int sliderTime = userSettings.DelayTime;
             InitializeComponent();
             DataContext = userSettings;
             Slider.Value = sliderTime;
@@ -56,20 +55,28 @@ namespace WpfClipboardTextTyper
             if (!isAnimanting)
             {
                 isAnimanting = true;
-                Task.Run(() =>
+                try
                 {
-                    string caption = "";
-                    Dispatcher.Invoke(() => caption = TBCaption.Text);
-                    int i = 1;
-                    while (i <= caption.Length)
+                    Task.Run(() =>
                     {
-                        Dispatcher.Invoke(() => TBCaption.Text = string.Join("", caption.Take(i).ToArray()));
-                        i++;
-                        Thread.Sleep(200);
-                    }
-                    Thread.Sleep(500);
+                        string caption = "";
+                        Dispatcher.Invoke(() => caption = TBCaption.Text);
+                        int i = 1;
+                        while (i <= caption.Length)
+                        {
+                            Dispatcher.Invoke(() => TBCaption.Text = string.Join("", caption.Take(i).ToArray()));
+                            i++;
+                            Thread.Sleep(200);
+                        }
+                        Thread.Sleep(500);
+                        isAnimanting = false;
+                    });
+                }
+                catch
+                {
+                    TBCaption.Text = "ClipboardTextTyper";
                     isAnimanting = false;
-                });
+                }
             }
         }
 
@@ -99,7 +106,7 @@ namespace WpfClipboardTextTyper
 
         private void WindowActivated(object sender, EventArgs e)
         {
-            TextTyper.BufferText = TextTyper.GetBufferText();
+            TextTyper.BufferText = TextTyper.GetBufferText(userSettings);
         }
 
     }
