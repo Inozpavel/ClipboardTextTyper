@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -77,8 +78,8 @@ namespace WpfClipboardTextTyper
             HideTimeInput.IsChecked = !userSettings.ShouldDelayBe;
             ShowTimeInput.IsChecked = userSettings.ShouldDelayBe;
             TimeInput.Opacity = HideTimeInput.IsChecked ?? true ? 0 : 1;
-            TextTyper.HotkeysListening.Start();
-            TextTyper.ListenShift.Start();
+            TextTyper.KeysListening.Initialize();
+            TextTyper.window = Process.GetProcessesByName("WpfClipboardTextTyper")[0];
         }
 
         private void ShowTimeInputChecked(object sender, RoutedEventArgs e)
