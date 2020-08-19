@@ -1,9 +1,12 @@
 ﻿.vs/
 obj/
 bin/
+Debug/
+*.json
 Properties/
 App.*
 *.csproj
 *.user
 *.sln
 *.config
+*.vdproj
