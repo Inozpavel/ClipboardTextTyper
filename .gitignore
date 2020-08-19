@@ -1,4 +1,4 @@
-.vs/
+﻿.vs/
 obj/
 bin/
 Properties/
@@ -7,4 +7,3 @@ App.*
 *.user
 *.sln
 *.config
-
