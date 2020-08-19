@@ -12,7 +12,8 @@ namespace WpfClipboardTextTyper
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
-    {   internal static Settings userSettings;
+    {
+        internal static Settings userSettings;
         internal bool isAnimanting = false;
         internal DoubleAnimation showHalfTimeInput = new DoubleAnimation(0, 0.6, new Duration(new TimeSpan(0, 0, 0, 0, 600)));
         internal DoubleAnimation showTimeInput = new DoubleAnimation(0.6, 1, new Duration(new TimeSpan(0, 0, 0, 0, 300)));
@@ -30,15 +31,6 @@ namespace WpfClipboardTextTyper
             hideHalfTimeInput.Completed += new EventHandler((x, y) => TimeInput.BeginAnimation(OpacityProperty, hideTimeInput));
         }
 
-        private void CloseApp(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            Close();
-        }
-
-        private void MinimizeApp(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            WindowState = WindowState.Minimized;
-        }
         private void DragMoveApp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             DragMove();
@@ -104,10 +96,14 @@ namespace WpfClipboardTextTyper
             Settings.SaveSetting(userSettings);
         }
 
-        private void WindowActivated(object sender, EventArgs e)
+        private void CloseApp(object sender, RoutedEventArgs e)
         {
-            TextTyper.BufferText = TextTyper.GetBufferText(userSettings);
+            Close();
         }
 
+        private void MinimizeApp(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
     }
 }
