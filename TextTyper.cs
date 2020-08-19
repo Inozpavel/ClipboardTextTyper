@@ -1,5 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,35 +39,114 @@ namespace WpfClipboardTextTyper
         {
             while (true)
             {
-                _isShiftPressed = IsKeysPressed(Keys.LShiftKey, null);
+                _isShiftPressed = GetAsyncKeyState((int)Keys.LShiftKey) != 0;
             }
         });
+
+        #region Win32
 
         [DllImport("User32.dll")]
         public static extern int GetAsyncKeyState(int vKey);
 
+        [DllImport("user32.dll")]
+        private static extern bool IsClipboardFormatAvailable(uint format);
+
+        [DllImport("user32.dll")]
+        private static extern bool OpenClipboard(IntPtr hWndNewOwner);
+
+        [DllImport("user32.dll")]
+        private static extern bool CloseClipboard();
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetClipboardData(uint uFormat);
+
+        [DllImport("Kernel32.dll")]
+        private static extern IntPtr GlobalLock(IntPtr hMem);
+
+        [DllImport("Kernel32.dll")]
+        private static extern bool GlobalUnlock(IntPtr hMem);
+
+        [DllImport("Kernel32.dll")]
+        private static extern int GlobalSize(IntPtr hMem);
+
+        [DllImport("USER32.DLL", CharSet = CharSet.Unicode)]
+        public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+        private const uint CF_UNICODETEXT = 13U;
+
+        #endregion
+
+        public static string GetBufferText()
+        {
+            if (IsClipboardFormatAvailable(CF_UNICODETEXT) == false)
+                return "";
+            try
+            {
+                if (!OpenClipboard(IntPtr.Zero))
+                    return null;
+
+                IntPtr handle = GetClipboardData(CF_UNICODETEXT);
+                if (handle == IntPtr.Zero)
+                    return null;
+
+                IntPtr pointer = IntPtr.Zero;
+
+                try
+                {
+                    pointer = GlobalLock(handle);
+                    if (pointer == IntPtr.Zero)
+                        return null;
+
+                    int size = GlobalSize(handle);
+                    byte[] buff = new byte[size];
+
+                    Marshal.Copy(pointer, buff, 0, size);
+
+                    return Encoding.Unicode.GetString(buff).TrimEnd('\0');
+                }
+                finally
+                {
+                    if (pointer != IntPtr.Zero)
+                        GlobalUnlock(handle);
+                }
+            }
+            finally
+            {
+                CloseClipboard();
+            }
+        }
+
         public static void Print()
         {
+            BufferText = FilterText(MainWindow.userSettings);
             if (BufferText == null)
                 return;
-            foreach (var symbol in BufferText)
+            try
             {
-                while (_isShiftPressed || _shouldPause)
+                foreach (var symbol in BufferText)
                 {
-                }
+                    while (_isShiftPressed || _shouldPause)
+                    {
+                    }
 
-                if (_shouldAbort)
-                {
-                    _shouldAbort = false;
-                    break;
-                }
+                    if (_shouldAbort)
+                    {
+                        _shouldAbort = false;
+                        break;
+                    }
 
-                if (_specialKeys.Contains(symbol))
-                    SendKeys.SendWait($"{{{symbol}}}");
-                else
-                    SendKeys.SendWait(symbol.ToString());
-                if (MainWindow.userSettings.ShouldDelayBe)
-                    Thread.Sleep(MainWindow.userSettings.DelayTime);
+                    if (_specialKeys.Contains(symbol))
+                        SendKeys.SendWait($"{{{symbol}}}");
+                    else
+                        SendKeys.SendWait(symbol.ToString());
+
+                    if (MainWindow.userSettings.ShouldDelayBe)
+                        Thread.Sleep(MainWindow.userSettings.DelayTime);
+                }
+            }
+            catch
+            {
+                MessageBox.Show("При печати произошла ошибка.", "Ошибка.", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             _isTyping = false;
         }
@@ -72,11 +155,11 @@ namespace WpfClipboardTextTyper
         {
             while (true)
             {
-                if (IsKeysPressed(Keys.F2, Keys.LShiftKey))
+                if (GetAsyncKeyState((int)Keys.F2) != 0 && GetAsyncKeyState((int)Keys.LShiftKey) != 0)
                     _shouldAbort = true;
-                if (IsKeysPressed(Keys.F12, Keys.LShiftKey))
+                if (GetAsyncKeyState((int)Keys.F12) != 0 && GetAsyncKeyState((int)Keys.LShiftKey) != 0)
                     _shouldPause = !_shouldPause;
-                if (IsKeysPressed(Keys.F4, Keys.LShiftKey))
+                if (GetAsyncKeyState((int)Keys.F4) != 0 && GetAsyncKeyState((int)Keys.LShiftKey) != 0)
                 {
                     if (_isTyping == false)
                     {
@@ -87,31 +170,25 @@ namespace WpfClipboardTextTyper
             }
         }
 
-        public static char[] GetBufferText(Settings settings)
+        public static char[] FilterText(Settings settings)
         {
-            string bufferText = Regex.Replace(Clipboard.GetText(TextDataFormat.Text), @"\r", "");
+            string bufferText = Regex.Replace(GetBufferText(), @"\r", "");
+            string s = GetBufferText();
 
             var spacesToDelete = Regex.Matches(settings.CharsToDelete, @"\s+")
                 .Cast<Match>().Select(x => x.Value).ToList();
 
-            var CharsToDelete = settings.CharsToDelete;
-            var commonSymbols = string.Join("", Regex.Split(CharsToDelete, @"\\\w")
+            var symbolsToDelete = settings.CharsToDelete;
+            var commonSymbols = string.Join("", Regex.Split(symbolsToDelete, @"\\\w")
                 .Where(x => !string.IsNullOrEmpty(x)).ToList())
                 .Select(x => x.ToString()).Where(x => x != " ").ToList();
-            var spesialSymbols = Regex.Matches(CharsToDelete, @"\\\w")
+            var spesialSymbols = Regex.Matches(symbolsToDelete, @"\\\w")
                 .Cast<Match>().Select(x => x.Value).ToList();
 
             foreach (var symbol in commonSymbols.Union(spesialSymbols).Union(spacesToDelete))
                 bufferText = Regex.Replace(bufferText, symbol, "");
-            
-            return bufferText.ToArray();
-        }
 
-        private static bool IsKeysPressed(Keys key1, Keys? key2)
-        {
-            if (key2 == null)
-                return GetAsyncKeyState((int)key1) != 0;
-            return GetAsyncKeyState((int)key1) != 0 && GetAsyncKeyState((int)key2) != 0;
+            return bufferText.ToArray();
         }
     }
 }
