@@ -18,7 +18,7 @@
     </Window.Triggers>
     <Grid Background="#FF2D2D30">
         <Grid.RowDefinitions>
-            <RowDefinition x:Name="UpperBar" Height="30"/>
+            <RowDefinition x:Name="UpperBar" Height="34"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <!--Верхняя рамка с кнопками управления окном-->
@@ -72,7 +72,8 @@
                     </Border>
                 </ControlTemplate>
             </DockPanel.Resources>
-            <TextBlock Name="TBCaption" Text="ClipboardTextTyper" DockPanel.Dock="Left" Foreground="White" TextAlignment="Center" FontSize="18" MouseEnter="TBCaptionMouseEnter"/>
+            <Image Source="Images/AppIcon.ico"/>
+            <TextBlock Name="TBCaption" Text="ClipboardTextTyper" DockPanel.Dock="Left" Foreground="White" VerticalAlignment="Center" FontSize="20" MouseEnter="TBCaptionMouseEnter"/>
             <Button Template="{StaticResource ControlButton}" DockPanel.Dock="Right" Click="CloseApp">
                 <Image ToolTip="Выйти">
                     <Image.Style>
