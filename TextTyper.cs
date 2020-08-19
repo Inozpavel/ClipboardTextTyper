@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -16,11 +15,11 @@ namespace WpfClipboardTextTyper
         private static readonly char[] _specialKeys =
         {
             '+',
-            '(',
-            ')',
             '^',
             '%',
             '~',
+            '(',
+            ')',
             '{',
             '}',
             '[',
@@ -32,20 +31,21 @@ namespace WpfClipboardTextTyper
         private static bool _isTyping = false;
         private static bool _shouldPause = false;
         public static char[] BufferText { get; set; }
-
-        public static Task HotkeysListening = new Task(() => ListenKeys());
-
-        public static Task ListenShift = new Task(() =>
+        public static Process window;
+        public static System.Threading.Timer[] KeysListening =
         {
-            while (true)
-            {
-                _isShiftPressed = GetAsyncKeyState((int)Keys.LShiftKey) != 0;
-            }
-        });
+            new System.Threading.Timer(ListenShift, null, 0, 1),
+            new System.Threading.Timer(ListenAbordTyping, null, 0, 1),
+            new System.Threading.Timer(ListenPauseTyping, null, 0, 1),
+            new System.Threading.Timer(ListenStartTyping, null, 0, 1),
+        };
 
         #region Win32
 
-        [DllImport("User32.dll")]
+        [DllImport("user32.dll")]
+        static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
         public static extern int GetAsyncKeyState(int vKey);
 
         [DllImport("user32.dll")]
@@ -69,17 +69,53 @@ namespace WpfClipboardTextTyper
         [DllImport("Kernel32.dll")]
         private static extern int GlobalSize(IntPtr hMem);
 
-        [DllImport("USER32.DLL", CharSet = CharSet.Unicode)]
-        public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
-
         private const uint CF_UNICODETEXT = 13U;
 
         #endregion
 
+        #region Keys listening
+
+        public static void ListenShift(object obj)
+        {
+            _isShiftPressed = GetAsyncKeyState((int)Keys.LShiftKey) != 0;
+        }
+
+        static void ListenAbordTyping(object obj)
+        {
+            if (GetAsyncKeyState((int)Keys.F2) != 0 && _isShiftPressed)
+                _shouldAbort = true;
+        }
+
+        static void ListenPauseTyping(object obj)
+        {
+            if (GetAsyncKeyState((int)Keys.F12) != 0 && _isShiftPressed)
+            {
+                _shouldPause = !_shouldPause;
+                if (_shouldPause)
+                    SetForegroundWindow(window.MainWindowHandle);
+            }
+        }
+
+        static void ListenStartTyping(object obj)
+        {
+            if (GetAsyncKeyState((int)Keys.F4) != 0 && _isShiftPressed)
+            {
+                if (_isTyping == false)
+                {
+                    _isTyping = true;
+                    Task.Run(() => Print());
+                }
+            }
+        }
+
+        #endregion
+
+        #region Methods working with text
+
         public static string GetBufferText()
         {
             if (IsClipboardFormatAvailable(CF_UNICODETEXT) == false)
-                return "";
+                return null;
             try
             {
                 if (!OpenClipboard(IntPtr.Zero))
@@ -151,29 +187,9 @@ namespace WpfClipboardTextTyper
             _isTyping = false;
         }
 
-        private static void ListenKeys()
-        {
-            while (true)
-            {
-                if (GetAsyncKeyState((int)Keys.F2) != 0 && GetAsyncKeyState((int)Keys.LShiftKey) != 0)
-                    _shouldAbort = true;
-                if (GetAsyncKeyState((int)Keys.F12) != 0 && GetAsyncKeyState((int)Keys.LShiftKey) != 0)
-                    _shouldPause = !_shouldPause;
-                if (GetAsyncKeyState((int)Keys.F4) != 0 && GetAsyncKeyState((int)Keys.LShiftKey) != 0)
-                {
-                    if (_isTyping == false)
-                    {
-                        _isTyping = true;
-                        Task.Run(() => Print());
-                    }
-                }
-            }
-        }
-
         public static char[] FilterText(Settings settings)
         {
-            string bufferText = Regex.Replace(GetBufferText(), @"\r", "");
-            string s = GetBufferText();
+            string bufferText = Regex.Replace(GetBufferText() ?? "", @"\r", "");
 
             var spacesToDelete = Regex.Matches(settings.CharsToDelete, @"\s+")
                 .Cast<Match>().Select(x => x.Value).ToList();
@@ -190,5 +206,7 @@ namespace WpfClipboardTextTyper
 
             return bufferText.ToArray();
         }
+
+        #endregion
     }
 }
