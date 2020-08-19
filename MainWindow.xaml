@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WpfClipboardTextTyper"
         mc:Ignorable="d"
         Title="ClipboardTextTyper" Height="226.833" Width="835"
-        WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="NoResize" Loaded="WindowLoaded" Activated="WindowActivated">
+        WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="NoResize" Loaded="WindowLoaded">
     <Window.Triggers>
         <EventTrigger RoutedEvent="Loaded">
             <BeginStoryboard>
@@ -31,7 +31,6 @@
                     <Setter Property="HorizontalAlignment" Value="Right"/>
                     <Setter Property="Width" Value="{Binding ElementName=UpperBar, Path=Height}"/>
                     <Setter Property="Cursor" Value="Hand"/>
-                    <Setter Property="DockPanel.Dock" Value="Right"/>
                     <Style.Triggers>
                         <EventTrigger RoutedEvent="MouseEnter">
                             <BeginStoryboard>
@@ -49,10 +48,33 @@
                         </EventTrigger>
                     </Style.Triggers>
                 </Style>
+                <ControlTemplate TargetType="Button" x:Key="ControlButton">
+                    <Border Style="{StaticResource BorderControlButton}" Margin="{TemplateBinding Margin}">
+                        <Grid>
+                            <ContentPresenter Content="{TemplateBinding Property=ContentControl.Content}" />
+                        </Grid>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup Name="Common">
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <ThicknessAnimation To="2" Duration="0:0:0.1" Storyboard.TargetProperty="BorderThickness"/>
+                                        <ColorAnimation To="Yellow" Duration="0:0:0.1" Storyboard.TargetProperty="BorderBrush.(SolidColorBrush.Color)"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Normal">
+                                    <Storyboard>
+                                        <ThicknessAnimation To="0" Storyboard.TargetProperty="BorderThickness"/>
+                                        <ColorAnimation To="White" Storyboard.TargetProperty="BorderBrush.(SolidColorBrush.Color)"/>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Border>
+                </ControlTemplate>
             </DockPanel.Resources>
             <TextBlock Name="TBCaption" Text="ClipboardTextTyper" DockPanel.Dock="Left" Foreground="White" TextAlignment="Center" FontSize="18" MouseEnter="TBCaptionMouseEnter"/>
-            <Border Style="{StaticResource BorderControlButton}">
-                <Image ToolTip="Выйти" MouseLeftButtonDown="CloseApp">
+            <Button Template="{StaticResource ControlButton}" DockPanel.Dock="Right" Click="CloseApp">
+                <Image ToolTip="Выйти">
                     <Image.Style>
                         <Style TargetType="Image">
                             <Setter Property="Source" Value="Images/bExitNotSelected.png"/>
@@ -64,9 +86,9 @@
                         </Style>
                     </Image.Style>
                 </Image>
-            </Border>
-            <Border Style="{StaticResource BorderControlButton}" Margin="1 0 0 0">
-                <Image ToolTip="Свернуть" MouseLeftButtonDown="MinimizeApp">
+            </Button>
+            <Button Template="{StaticResource ControlButton}" Margin="1 0 0 0" DockPanel.Dock="Right" Click="MinimizeApp">
+                <Image ToolTip="Свернуть">
                     <Image.Style>
                         <Style TargetType="Image">
                             <Setter Property="Source" Value="Images/bMinimizeNotSelected.png"/>
@@ -78,7 +100,7 @@
                         </Style>
                     </Image.Style>
                 </Image>
-            </Border>
+            </Button>
         </DockPanel>
 
         <Grid Grid.Row="1">
