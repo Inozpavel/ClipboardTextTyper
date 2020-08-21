@@ -37,6 +37,7 @@ namespace WpfClipboardTextTyper
             new System.Threading.Timer(ListenShift, null, 0, 1),
             new System.Threading.Timer(ListenAbordTyping, null, 0, 1),
             new System.Threading.Timer(ListenPauseTyping, null, 0, 1),
+            new System.Threading.Timer(ListenContinueTyping, null, 0, 1),
             new System.Threading.Timer(ListenStartTyping, null, 0, 1),
         };
 
@@ -88,11 +89,24 @@ namespace WpfClipboardTextTyper
 
         static void ListenPauseTyping(object obj)
         {
+            if (_isTyping == false)
+                return;
+            if (GetAsyncKeyState((int)Keys.F11) != 0 && _isShiftPressed)
+            {
+                _shouldPause = true;
+                MainWindow.userSettings.TypingStatus = "Печать приостановлена";
+                SetForegroundWindow(window.MainWindowHandle);
+            }
+        }
+
+        static void ListenContinueTyping(object obj)
+        {
+            if (_isTyping == false)
+                return;
             if (GetAsyncKeyState((int)Keys.F12) != 0 && _isShiftPressed)
             {
-                _shouldPause = !_shouldPause;
-                if (_shouldPause)
-                    SetForegroundWindow(window.MainWindowHandle);
+                _shouldPause = false;
+                MainWindow.userSettings.TypingStatus = "Печать запущена";
             }
         }
 
@@ -103,6 +117,7 @@ namespace WpfClipboardTextTyper
                 if (_isTyping == false)
                 {
                     _isTyping = true;
+                    MainWindow.userSettings.TypingStatus = "Печать запущена";
                     Task.Run(() => Print());
                 }
             }
@@ -151,7 +166,7 @@ namespace WpfClipboardTextTyper
                 CloseClipboard();
             }
         }
-
+        static Task task = new Task(() => Console.WriteLine());
         public static void Print()
         {
             BufferText = FilterText(MainWindow.userSettings);
@@ -178,12 +193,15 @@ namespace WpfClipboardTextTyper
 
                     if (MainWindow.userSettings.ShouldDelayBe)
                         Thread.Sleep(MainWindow.userSettings.DelayTime);
+                    else
+                        Thread.Sleep(1);
                 }
             }
             catch
             {
                 MessageBox.Show("При печати произошла ошибка.", "Ошибка.", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            MainWindow.userSettings.TypingStatus = "Печать не запущена";
             _isTyping = false;
         }
 
