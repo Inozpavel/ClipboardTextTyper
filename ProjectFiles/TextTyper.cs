@@ -12,6 +12,16 @@ namespace WpfClipboardTextTyper
 {
     internal static class TextTyper
     {
+        public static Process window;
+        public static System.Threading.Timer[] KeysListening =
+        {
+            new System.Threading.Timer(ListenShift, null, 0, 1),
+            new System.Threading.Timer(ListenAbordTyping, null, 0, 1),
+            new System.Threading.Timer(ListenPauseTyping, null, 0, 1),
+            new System.Threading.Timer(ListenContinueTyping, null, 0, 1),
+            new System.Threading.Timer(ListenStartTyping, null, 0, 1),
+        };
+
         private static readonly char[] _specialKeys =
         {
             '+',
@@ -30,24 +40,15 @@ namespace WpfClipboardTextTyper
         private static bool _isShiftPressed = false;
         private static bool _isTyping = false;
         private static bool _shouldPause = false;
-        public static char[] BufferText { get; set; }
-        public static Process window;
-        public static System.Threading.Timer[] KeysListening =
-        {
-            new System.Threading.Timer(ListenShift, null, 0, 1),
-            new System.Threading.Timer(ListenAbordTyping, null, 0, 1),
-            new System.Threading.Timer(ListenPauseTyping, null, 0, 1),
-            new System.Threading.Timer(ListenContinueTyping, null, 0, 1),
-            new System.Threading.Timer(ListenStartTyping, null, 0, 1),
-        };
+        private static char[] BufferText { get; set; }
 
         #region Win32
 
         [DllImport("user32.dll")]
-        static extern bool SetForegroundWindow(IntPtr hWnd);
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
 
         [DllImport("user32.dll")]
-        public static extern int GetAsyncKeyState(int vKey);
+        private static extern int GetAsyncKeyState(int vKey);
 
         [DllImport("user32.dll")]
         private static extern bool IsClipboardFormatAvailable(uint format);
@@ -76,18 +77,18 @@ namespace WpfClipboardTextTyper
 
         #region Keys listening
 
-        public static void ListenShift(object obj)
+        private static void ListenShift(object obj)
         {
             _isShiftPressed = GetAsyncKeyState((int)Keys.LShiftKey) != 0;
         }
 
-        static void ListenAbordTyping(object obj)
+        private static void ListenAbordTyping(object obj)
         {
             if (GetAsyncKeyState((int)Keys.F2) != 0 && _isShiftPressed)
                 _shouldAbort = true;
         }
 
-        static void ListenPauseTyping(object obj)
+        private static void ListenPauseTyping(object obj)
         {
             if (_isTyping == false)
                 return;
@@ -99,7 +100,7 @@ namespace WpfClipboardTextTyper
             }
         }
 
-        static void ListenContinueTyping(object obj)
+        private static void ListenContinueTyping(object obj)
         {
             if (_isTyping == false)
                 return;
@@ -110,7 +111,7 @@ namespace WpfClipboardTextTyper
             }
         }
 
-        static void ListenStartTyping(object obj)
+        private static void ListenStartTyping(object obj)
         {
             if (GetAsyncKeyState((int)Keys.F4) != 0 && _isShiftPressed)
             {
@@ -127,7 +128,7 @@ namespace WpfClipboardTextTyper
 
         #region Methods working with text
 
-        public static string GetBufferText()
+        private static string GetBufferText()
         {
             if (IsClipboardFormatAvailable(CF_UNICODETEXT) == false)
                 return null;
@@ -166,15 +167,15 @@ namespace WpfClipboardTextTyper
                 CloseClipboard();
             }
         }
-        static Task task = new Task(() => Console.WriteLine());
-        public static void Print()
+
+        private static void Print()
         {
             BufferText = FilterText(MainWindow.userSettings);
             if (BufferText == null)
                 return;
             try
             {
-                foreach (var symbol in BufferText)
+                foreach (char symbol in BufferText)
                 {
                     while (_isShiftPressed || _shouldPause)
                     {
@@ -199,27 +200,36 @@ namespace WpfClipboardTextTyper
             }
             catch
             {
-                MessageBox.Show("При печати произошла ошибка.", "Ошибка.", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("При печати произошла ошибка.", "Ошибка.",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             MainWindow.userSettings.TypingStatus = "Печать не запущена";
             _isTyping = false;
         }
 
-        public static char[] FilterText(Settings settings)
+        private static char[] FilterText(Settings settings)
         {
             string bufferText = Regex.Replace(GetBufferText() ?? "", @"\r", "");
 
-            var spacesToDelete = Regex.Matches(settings.CharsToDelete, @"\s+")
+            System.Collections.Generic.List<string> spacesToDelete = Regex
+                .Matches(settings.CharsToDelete, @"\s+")
                 .Cast<Match>().Select(x => x.Value).ToList();
 
-            var symbolsToDelete = settings.CharsToDelete;
-            var commonSymbols = string.Join("", Regex.Split(symbolsToDelete, @"\\\w")
+            string symbolsToDelete = settings.CharsToDelete;
+
+            System.Collections.Generic.List<string> commonSymbols = string
+                .Join("", Regex.Split(symbolsToDelete, @"\\\w")
                 .Where(x => !string.IsNullOrEmpty(x)).ToList())
                 .Select(x => x.ToString()).Where(x => x != " ").ToList();
-            var spesialSymbols = Regex.Matches(symbolsToDelete, @"\\\w")
+
+            System.Collections.Generic.List<string> spesialSymbols = Regex
+                .Matches(symbolsToDelete, @"\\\w")
                 .Cast<Match>().Select(x => x.Value).ToList();
 
-            foreach (var symbol in commonSymbols.Union(spesialSymbols).Union(spacesToDelete))
+            var finalArrayToDelete = commonSymbols
+                .Union(spesialSymbols).Union(spacesToDelete);
+
+            foreach (string symbol in finalArrayToDelete)
                 bufferText = Regex.Replace(bufferText, symbol, "");
 
             return bufferText.ToArray();
