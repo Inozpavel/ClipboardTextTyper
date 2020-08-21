@@ -49,7 +49,7 @@
                     </Style.Triggers>
                 </Style>
                 <ControlTemplate TargetType="Button" x:Key="ControlButton">
-                    <Border Style="{StaticResource BorderControlButton}" Margin="{TemplateBinding Margin}">
+                    <Border Name="border" Style="{StaticResource BorderControlButton}" Margin="{TemplateBinding Margin}" Background="{TemplateBinding Background}">
                         <Grid>
                             <ContentPresenter Content="{TemplateBinding Property=ContentControl.Content}" />
                         </Grid>
@@ -70,12 +70,20 @@
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
                     </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="#FF686868"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="False">
+                            <Setter Property="Background" Value="Transparent"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </DockPanel.Resources>
             <Image Source="Images/AppIcon.ico"/>
             <TextBlock Name="TBCaption" Text="ClipboardTextTyper" DockPanel.Dock="Left" Foreground="White" VerticalAlignment="Center" FontSize="20" MouseEnter="TBCaptionMouseEnter" Margin="5 0 0 0"/>
-            <Button Template="{StaticResource ControlButton}" DockPanel.Dock="Right" Click="CloseApp">
-                <Image ToolTip="Выйти">
+            <Button Name="BExit" Template="{StaticResource ControlButton}" DockPanel.Dock="Right" Click="CloseApp">
+                <Image Name="ButtonImage" ToolTip="Выйти" OpacityMask="#FF686868">
                     <Image.Style>
                         <Style TargetType="Image">
                             <Setter Property="Source" Value="Images/bExitNotSelected.png"/>
@@ -83,12 +91,15 @@
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter Property="Source" Value="Images/bExitSelected.png"/>
                                 </Trigger>
+                                <DataTrigger Binding="{Binding IsPressed,ElementName=BExit}" Value="True">
+                                    <Setter Property="Source" Value="Images/bExitSelected.png"/>
+                                </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Image.Style>
                 </Image>
             </Button>
-            <Button Template="{StaticResource ControlButton}" Margin="1 0 0 0" DockPanel.Dock="Right" Click="MinimizeApp">
+            <Button x:Name="BMinimize" Template="{StaticResource ControlButton}" Margin="1 0 0 0" DockPanel.Dock="Right" Click="MinimizeApp">
                 <Image ToolTip="Свернуть">
                     <Image.Style>
                         <Style TargetType="Image">
@@ -97,6 +108,9 @@
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter Property="Source" Value="Images/bMinimizeSelected.png"/>
                                 </Trigger>
+                                <DataTrigger Binding="{Binding IsPressed,ElementName=BMinimize}" Value="True">
+                                    <Setter Property="Source" Value="Images/bMinimizeSelected.png"/>
+                                </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Image.Style>
