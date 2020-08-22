@@ -12,6 +12,16 @@ namespace WpfClipboardTextTyper
 {
     internal static class TextTyper
     {
+        public static Process window;
+        public static System.Threading.Timer[] KeysListening =
+        {
+            new System.Threading.Timer(ListenShift, null, 0, 1),
+            new System.Threading.Timer(ListenAbordTyping, null, 0, 1),
+            new System.Threading.Timer(ListenPauseTyping, null, 0, 1),
+            new System.Threading.Timer(ListenContinueTyping, null, 0, 1),
+            new System.Threading.Timer(ListenStartTyping, null, 0, 1),
+        };
+
         private static readonly char[] _specialKeys =
         {
             '+',
@@ -30,16 +40,7 @@ namespace WpfClipboardTextTyper
         private static bool _isShiftPressed = false;
         private static bool _isTyping = false;
         private static bool _shouldPause = false;
-        public static char[] BufferText { get; set; }
-        public static Process window;
-        public static System.Threading.Timer[] KeysListening =
-        {
-            new System.Threading.Timer(ListenShift, null, 0, 1),
-            new System.Threading.Timer(ListenAbordTyping, null, 0, 1),
-            new System.Threading.Timer(ListenPauseTyping, null, 0, 1),
-            new System.Threading.Timer(ListenContinueTyping, null, 0, 1),
-            new System.Threading.Timer(ListenStartTyping, null, 0, 1),
-        };
+        private static char[] BufferText { get; set; }
 
         #region Win32
 
@@ -47,7 +48,7 @@ namespace WpfClipboardTextTyper
         private static extern bool SetForegroundWindow(IntPtr hWnd);
 
         [DllImport("user32.dll")]
-        public static extern int GetAsyncKeyState(int vKey);
+        private static extern int GetAsyncKeyState(int vKey);
 
         [DllImport("user32.dll")]
         private static extern bool IsClipboardFormatAvailable(uint format);
@@ -76,7 +77,7 @@ namespace WpfClipboardTextTyper
 
         #region Keys listening
 
-        public static void ListenShift(object obj)
+        private static void ListenShift(object obj)
         {
             _isShiftPressed = GetAsyncKeyState((int)Keys.LShiftKey) != 0;
         }
@@ -127,7 +128,7 @@ namespace WpfClipboardTextTyper
 
         #region Methods working with text
 
-        public static string GetBufferText()
+        private static string GetBufferText()
         {
             if (IsClipboardFormatAvailable(CF_UNICODETEXT) == false)
                 return null;
@@ -167,7 +168,7 @@ namespace WpfClipboardTextTyper
             }
         }
 
-        public static void Print()
+        private static void Print()
         {
             BufferText = FilterText(MainWindow.userSettings);
             if (BufferText == null)
@@ -206,7 +207,7 @@ namespace WpfClipboardTextTyper
             _isTyping = false;
         }
 
-        public static char[] FilterText(Settings settings)
+        private static char[] FilterText(Settings settings)
         {
             string bufferText = Regex.Replace(GetBufferText() ?? "", @"\r", "");
 
