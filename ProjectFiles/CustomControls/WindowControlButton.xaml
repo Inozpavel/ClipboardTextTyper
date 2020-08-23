@@ -1,0 +1,80 @@
+﻿<UserControl x:Class="ClipboardTextTyper.WindowControlButton"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ClipboardTextTyper"
+             mc:Ignorable="d" 
+             d:DesignHeight="40" d:DesignWidth="40">
+        <Button x:Name="MainButton">
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="Border" BorderThickness="2" CornerRadius="3" Cursor="Hand" Background="{TemplateBinding Background}">
+                                <!--Визуальные состояния кнопки-->
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+                                        <VisualState Name="Pressed">
+                                            <Storyboard>
+                                                <ColorAnimation To="Yellow" Duration="0:0:0.1" Storyboard.TargetProperty="BorderBrush.(SolidColorBrush.Color)"/>
+                                                <ThicknessAnimation To="2" Duration="0:0:0.5" Storyboard.TargetProperty="BorderThickness"/>
+                                                <ColorAnimation To="#FF686868" Storyboard.TargetProperty="Background.(SolidColorBrush.Color)"/>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState Name="Normal">
+                                            <Storyboard>
+                                                <ColorAnimation To="White" Duration="0:0:0.1" Storyboard.TargetProperty="BorderBrush.(SolidColorBrush.Color)"/>
+                                                <ThicknessAnimation To="0" Duration="0:0:0.5" Storyboard.TargetProperty="BorderThickness"/>
+                                                <ColorAnimation To="Transparent" Duration="0:0:1"  Storyboard.TargetProperty="Background.(SolidColorBrush.Color)"/>
+                                            </Storyboard>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <!--Картинка на кнопке-->
+                                <Image>
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Setter Property="Source" Value="{Binding StartImagePath}"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Source" Value="{Binding MouseOverImagePath}"/>
+                                                </Trigger>
+                                                <DataTrigger Binding="{Binding IsPressed,ElementName=MainButton}" Value="True">
+                                                    <Setter Property="Source" Value="{Binding MouseOverImagePath}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                                <!--Анимация при наведении мышки-->
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="BorderBrush" Value="White"/>
+                                        <Style.Triggers>
+                                             <EventTrigger RoutedEvent="MouseEnter">
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <ThicknessAnimation To="2" Duration="0:0:0.5" Storyboard.TargetProperty="BorderThickness"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                             </EventTrigger>
+                                             <EventTrigger RoutedEvent="MouseLeave">
+                                                 <BeginStoryboard>
+                                                     <Storyboard>
+                                                         <ThicknessAnimation To="0" Duration="0:0:0.5" Storyboard.TargetProperty="BorderThickness"/>
+                                                      </Storyboard>
+                                                   </BeginStoryboard>
+                                             </EventTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Button.Style>
+        </Button>
+</UserControl>
