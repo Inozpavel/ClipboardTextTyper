@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:ClipboardTextTyper"
         mc:Ignorable="d"
-        Title="ClipboardTextTyper" Height="232.833" Width="905"
-        WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="NoResize" Loaded="WindowLoaded">
+        Title="ClipboardTextTyper"
+        WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="NoResize" Loaded="WindowLoaded" SizeToContent="WidthAndHeight">
     <Window.Triggers>
         <EventTrigger RoutedEvent="Loaded">
             <BeginStoryboard>
