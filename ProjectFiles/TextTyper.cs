@@ -211,18 +211,18 @@ namespace WpfClipboardTextTyper
         {
             string bufferText = Regex.Replace(GetBufferText() ?? "", @"\r", "");
 
-            System.Collections.Generic.List<string> spacesToDelete = Regex
+            var spacesToDelete = Regex
                 .Matches(settings.CharsToDelete, @"\s+")
                 .Cast<Match>().Select(x => x.Value).ToList();
 
             string symbolsToDelete = settings.CharsToDelete;
 
-            System.Collections.Generic.List<string> commonSymbols = string
+            var commonSymbols = string
                 .Join("", Regex.Split(symbolsToDelete, @"\\\w")
                 .Where(x => !string.IsNullOrEmpty(x)).ToList())
                 .Select(x => x.ToString()).Where(x => x != " ").ToList();
 
-            System.Collections.Generic.List<string> spesialSymbols = Regex
+            var spesialSymbols = Regex
                 .Matches(symbolsToDelete, @"\\\w")
                 .Cast<Match>().Select(x => x.Value).ToList();
 

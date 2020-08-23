@@ -16,17 +16,20 @@ namespace WpfClipboardTextTyper
         public int DelayTime { get; set; } = 10;
 
         public string CharsToDelete { get; set; } = "";
-        
+
         [JsonIgnore]
         private string _typingStatus = "Печать не запущена";
-        
+
         [JsonIgnore]
         public string TypingStatus
         {
-            get { return _typingStatus; }
-            set { _typingStatus = value; PropertyChanged(this, new PropertyChangedEventArgs("TypingStatus")); }
+            get => _typingStatus;
+            set
+            {
+                _typingStatus = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("TypingStatus"));
+            }
         }
-
 
         public static void SaveSetting(Settings settings)
         {

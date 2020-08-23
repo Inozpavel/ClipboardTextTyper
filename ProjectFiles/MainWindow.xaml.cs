@@ -89,7 +89,7 @@ namespace WpfClipboardTextTyper
         {
             HideTimeInput.IsChecked = !userSettings.ShouldDelayBe;
             ShowTimeInput.IsChecked = userSettings.ShouldDelayBe;
-            TimeInput.Opacity = HideTimeInput.IsChecked ?? true ? 0 : 1;
+            TimeInput.Opacity = HideTimeInput.IsChecked ? 0 : 1;
             TextTyper.KeysListening.Initialize();
             TextTyper.window = Process.GetProcessesByName("ClipboardTextTyper")[0];
         }
@@ -97,9 +97,15 @@ namespace WpfClipboardTextTyper
         private void ShowTimeInputChecked(object sender, RoutedEventArgs e)
         {
             if ((sender as RadioButton).IsChecked ?? false)
+            {
                 TimeInput.BeginAnimation(OpacityProperty, _showHalfTimeInput);
+                MainWindow.userSettings.ShouldDelayBe = true;
+            }
             else
+            {
                 TimeInput.BeginAnimation(OpacityProperty, _hideHalfTimeInput);
+                MainWindow.userSettings.ShouldDelayBe = false;
+            }
 
             Settings.SaveSetting(userSettings);
         }
