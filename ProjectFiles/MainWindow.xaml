@@ -3,9 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfClipboardTextTyper"
+        xmlns:controls="clr-namespace:ClipboardTextTyper"
         mc:Ignorable="d"
-        Title="ClipboardTextTyper" Height="232.833" Width="835"
+        Title="ClipboardTextTyper" Height="232.833" Width="905"
         WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="NoResize" Loaded="WindowLoaded">
     <Window.Triggers>
         <EventTrigger RoutedEvent="Loaded">
@@ -23,101 +23,12 @@
         </Grid.RowDefinitions>
         <!--Верхняя рамка с кнопками управления окном-->
         <DockPanel HorizontalAlignment="Stretch" Background="#FF252526" MouseLeftButtonDown="DragMoveApp">
-            <DockPanel.Resources>
-                <Style TargetType="Border" x:Key="BorderControlButton">
-                    <Setter Property="BorderThickness" Value="0"/>
-                    <Setter Property="BorderBrush" Value="White"/>
-                    <Setter Property="CornerRadius" Value="3"/>
-                    <Setter Property="HorizontalAlignment" Value="Right"/>
-                    <Setter Property="Width" Value="{Binding ElementName=UpperBar, Path=Height}"/>
-                    <Setter Property="Cursor" Value="Hand"/>
-                    <Style.Triggers>
-                        <EventTrigger RoutedEvent="MouseEnter">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <ThicknessAnimation From="0" To="2" Duration="0:0:0.5" Storyboard.TargetProperty="BorderThickness"/>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                        <EventTrigger RoutedEvent="MouseLeave">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <ThicknessAnimation From="2" To="0" Duration="0:0:0.5" Storyboard.TargetProperty="BorderThickness"/>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                    </Style.Triggers>
-                </Style>
-                <ControlTemplate TargetType="Button" x:Key="ControlButton">
-                    <Border Name="border" Style="{StaticResource BorderControlButton}" Margin="{TemplateBinding Margin}" Background="{TemplateBinding Background}">
-                        <Grid>
-                            <ContentPresenter Content="{TemplateBinding Property=ContentControl.Content}" />
-                        </Grid>
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup Name="Common">
-                                <VisualState x:Name="Pressed">
-                                    <Storyboard>
-                                        <ThicknessAnimation To="2" Duration="0:0:0.1" Storyboard.TargetProperty="BorderThickness"/>
-                                        <ColorAnimation To="Yellow" Duration="0:0:0.1" Storyboard.TargetProperty="BorderBrush.(SolidColorBrush.Color)"/>
-                                    </Storyboard>
-                                </VisualState>
-                                <VisualState x:Name="Normal">
-                                    <Storyboard>
-                                        <ThicknessAnimation To="0" Storyboard.TargetProperty="BorderThickness"/>
-                                        <ColorAnimation To="White" Storyboard.TargetProperty="BorderBrush.(SolidColorBrush.Color)"/>
-                                    </Storyboard>
-                                </VisualState>
-                            </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Background" Value="#FF686868"/>
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="False">
-                            <Setter Property="Background" Value="Transparent"/>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </DockPanel.Resources>
             <Image Source="Images/AppIcon.ico"/>
-            <TextBlock Name="TBCaption" Text="ClipboardTextTyper" DockPanel.Dock="Left" Foreground="White" VerticalAlignment="Center" FontSize="20" MouseEnter="TBCaptionMouseEnter" Margin="5 0 0 0"/>
-            <Button Name="BExit" Template="{StaticResource ControlButton}" DockPanel.Dock="Right" Click="CloseApp">
-                <Image Name="ButtonImage" ToolTip="Выйти" OpacityMask="#FF686868">
-                    <Image.Style>
-                        <Style TargetType="Image">
-                            <Setter Property="Source" Value="Images/bExitNotSelected.png"/>
-                            <Style.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Source" Value="Images/bExitSelected.png"/>
-                                </Trigger>
-                                <DataTrigger Binding="{Binding IsPressed,ElementName=BExit}" Value="True">
-                                    <Setter Property="Source" Value="Images/bExitSelected.png"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Image.Style>
-                </Image>
-            </Button>
-            <Button x:Name="BMinimize" Template="{StaticResource ControlButton}" Margin="1 0 0 0" DockPanel.Dock="Right" Click="MinimizeApp">
-                <Image ToolTip="Свернуть">
-                    <Image.Style>
-                        <Style TargetType="Image">
-                            <Setter Property="Source" Value="Images/bMinimizeNotSelected.png"/>
-                            <Style.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Source" Value="Images/bMinimizeSelected.png"/>
-                                </Trigger>
-                                <DataTrigger Binding="{Binding IsPressed,ElementName=BMinimize}" Value="True">
-                                    <Setter Property="Source" Value="Images/bMinimizeSelected.png"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Image.Style>
-                </Image>
-            </Button>
+            <TextBlock Name="TBCaption" Text="ClipboardTextTyper" DockPanel.Dock="Left" Foreground="White" Width="Auto" VerticalAlignment="Center" FontSize="20" MouseEnter="TBCaptionMouseEnter" Margin="5 0 0 0"/>
+            <controls:WindowControlButton HorizontalAlignment="Right" ButtonBase.Click="CloseApp" StartImagePath="Images/bExitNotSelected.png" MouseOverImagePath="Images/bExitSelected.png" DockPanel.Dock="Right" Width="40"/>
+            <controls:WindowControlButton HorizontalAlignment="Right" ButtonBase.Click="MinimizeApp" StartImagePath="Images/bMinimizeNotSelected.png" MouseOverImagePath="Images/bMinimizeSelected.png" DockPanel.Dock="Right" Width="40"/>
         </DockPanel>
-
+        <!--Общая сетка для настроек и сочетаний клавиш-->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -127,42 +38,6 @@
             <GroupBox Header="Настройки" Foreground="White" FontSize="17">
                 <Grid>
                     <Grid.Resources>
-                        <!--Красивые radio buttons-->
-                        <ControlTemplate TargetType="RadioButton" x:Key="NiceRadioButtons">
-                            <Border Name="AroundBorder" Background="#FF4F4F4F" BorderThickness="2" CornerRadius="4" Cursor="Hand" Width="90" Height="40" BorderBrush="Transparent">
-                                <ContentControl x:Name="Text" Content="{TemplateBinding Content}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup>
-                                        <VisualState x:Name="Checked">
-                                            <Storyboard>
-                                                <ColorAnimation From="Transparent" To="Aqua" Duration="0:0:0.8" Storyboard.TargetProperty="(BorderBrush).(SolidColorBrush.Color)" Storyboard.TargetName="AroundBorder"/>
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="Unchecked">
-                                            <Storyboard>
-                                                <ColorAnimation From="Aqua" To="Transparent" Duration="0:0:0.8" Storyboard.TargetProperty="(BorderBrush).(SolidColorBrush.Color)" Storyboard.TargetName="AroundBorder"/>
-                                            </Storyboard>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <EventTrigger RoutedEvent="MouseEnter">
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation From="13" To="14" Duration="0:0:0.2" Storyboard.TargetProperty="FontSize" Storyboard.TargetName="Text"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                                <EventTrigger RoutedEvent="MouseLeave">
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation From="14" To="13" Duration="0:0:0.2" Storyboard.TargetProperty="FontSize" Storyboard.TargetName="Text"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
                         <Style TargetType="Label">
                             <Setter Property="HorizontalAlignment" Value="Center"/>
                             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -175,13 +50,13 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <Label Content="Задержка при печати символа" FontSize="15"/>
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <RadioButton Name="HideTimeInput" GroupName="Delay" Template="{StaticResource NiceRadioButtons}" Content="Выключена" Grid.Column="1" FontSize="13" />
-                        <RadioButton Name="ShowTimeInput" GroupName="Delay" Template="{StaticResource NiceRadioButtons}" Content ="Включена" Grid.Column="1" FontSize="13" IsChecked="{Binding Path=ShouldDelayBe, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5 0 0 0" Checked="ShowTimeInputChecked" Unchecked="ShowTimeInputChecked"/>
+                    <Label Content="Задержка при печати символа" FontSize="15" Margin="5 0 5 0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10 0 10 0">
+                        <controls:SelectRadioButton x:Name="HideTimeInput" Text="Выключить" GroupName="Delay"/>
+                        <controls:SelectRadioButton x:Name="ShowTimeInput" Text="Включить" GroupName="Delay" Margin="5 0 0 0" Checked="ShowTimeInputChecked" Unchecked="ShowTimeInputChecked"/>
                     </StackPanel>
                     <StackPanel Grid.Column="1" Grid.Row="1" Name="TimeInput">
                         <TextBlock Text="{Binding ElementName=Slider, Path=Value, StringFormat={}{0} мс}" Foreground="White" HorizontalAlignment="Center"/>
