@@ -9,26 +9,34 @@
     <RadioButton Name="MainButton">
         <RadioButton.Style>
             <Style TargetType="RadioButton">
-                <Setter Property="IsChecked" Value="{Binding IsChecked}"/>
+                <Setter Property="IsChecked" Value="{Binding IsChecked, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
                 <Setter Property="Width" Value="110"/>
                 <Setter Property="Height" Value="40"/>
                 <Setter Property="GroupName" Value="{Binding GroupName}"/>
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="RadioButton">
-                            <Border Name="AroundBorder" Background="#FF4F4F4F" BorderThickness="2" CornerRadius="4" Cursor="Hand" BorderBrush="Transparent">
+                            <Border Name="AroundBorder" Background="#FF4F4F4F" BorderThickness="2" CornerRadius="4" Cursor="Hand">
+                                <Border.BorderBrush>
+                                    <LinearGradientBrush StartPoint="1 0" EndPoint="1 1">
+                                        <GradientStop Color="#185a9d" Offset="0"/>
+                                        <GradientStop Color="#3498db" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Border.BorderBrush>
                                 <Label Name="LBInfo" Foreground="White" FontSize="14" Content="{Binding Text}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 <!--Визуальные состояния кнопки-->
                                 <VisualStateManager.VisualStateGroups>
                                     <VisualStateGroup>
                                         <VisualState x:Name="Checked">
                                             <Storyboard>
-                                                <ColorAnimation To="Aqua" Duration="0:0:0.8" Storyboard.TargetProperty="(BorderBrush).(SolidColorBrush.Color)" Storyboard.TargetName="AroundBorder"/>
+                                                <ColorAnimation To="#185a9d" Duration="0:0:0.8" Storyboard.TargetProperty="BorderBrush.GradientStops[0].Color" Storyboard.TargetName="AroundBorder"/>
+                                                <ColorAnimation To="#3498db" Duration="0:0:0.8" Storyboard.TargetProperty="BorderBrush.GradientStops[1].Color" Storyboard.TargetName="AroundBorder"/>
                                             </Storyboard>
                                         </VisualState>
                                         <VisualState x:Name="Unchecked">
                                             <Storyboard>
-                                                <ColorAnimation To="Transparent" Duration="0:0:0.8" Storyboard.TargetProperty="(BorderBrush).(SolidColorBrush.Color)" Storyboard.TargetName="AroundBorder"/>
+                                                <ColorAnimation To="Transparent" Duration="0:0:0.8" Storyboard.TargetProperty="BorderBrush.GradientStops[0].Color" Storyboard.TargetName="AroundBorder"/>
+                                                <ColorAnimation To="Transparent" Duration="0:0:0.8" Storyboard.TargetProperty="BorderBrush.GradientStops[1].Color" Storyboard.TargetName="AroundBorder"/>
                                             </Storyboard>
                                         </VisualState>
                                     </VisualStateGroup>
@@ -40,6 +48,7 @@
                                     <BeginStoryboard>
                                         <Storyboard>
                                             <DoubleAnimation To="18" Duration="0:0:0.2" Storyboard.TargetProperty="FontSize" Storyboard.TargetName="LBInfo"/>
+                                            <ColorAnimation To="Gray" Duration="0:0:0.2" Storyboard.TargetProperty="Background.(SolidColorBrush.Color)" AutoReverse="True" Storyboard.TargetName="AroundBorder"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </EventTrigger>
