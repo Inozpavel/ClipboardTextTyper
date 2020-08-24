@@ -7,15 +7,6 @@
         mc:Ignorable="d"
         Title="ClipboardTextTyper"
         WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="NoResize" Loaded="WindowLoaded" SizeToContent="WidthAndHeight">
-    <Window.Triggers>
-        <EventTrigger RoutedEvent="Loaded">
-            <BeginStoryboard>
-                <Storyboard>
-                    <DoubleAnimation From="0" To="1" Storyboard.TargetProperty="Opacity" Duration="0:0:1"/>
-                </Storyboard>
-            </BeginStoryboard>
-        </EventTrigger>
-    </Window.Triggers>
     <Grid Background="#FF2D2D30">
         <Grid.RowDefinitions>
             <RowDefinition x:Name="UpperBar" Height="34"/>
@@ -23,106 +14,10 @@
         </Grid.RowDefinitions>
         <!--Верхняя рамка с кнопками управления окном-->
         <DockPanel HorizontalAlignment="Stretch" Background="#FF252526" MouseLeftButtonDown="DragMoveApp">
-<<<<<<< HEAD
-            <DockPanel.Resources>
-                <Style TargetType="Border" x:Key="BorderControlButton">
-                    <Setter Property="BorderThickness" Value="0"/>
-                    <Setter Property="BorderBrush" Value="White"/>
-                    <Setter Property="CornerRadius" Value="3"/>
-                    <Setter Property="HorizontalAlignment" Value="Right"/>
-                    <Setter Property="Width" Value="{Binding ElementName=UpperBar, Path=Height}"/>
-                    <Setter Property="Cursor" Value="Hand"/>
-                    <Style.Triggers>
-                        <EventTrigger RoutedEvent="MouseEnter">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <ThicknessAnimation From="0" To="2" Duration="0:0:0.5" Storyboard.TargetProperty="BorderThickness"/>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                        <EventTrigger RoutedEvent="MouseLeave">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <ThicknessAnimation From="2" To="0" Duration="0:0:0.5" Storyboard.TargetProperty="BorderThickness"/>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                    </Style.Triggers>
-                </Style>
-                <ControlTemplate TargetType="Button" x:Key="ControlButton">
-                    <Border Name="border" Style="{StaticResource BorderControlButton}" Margin="{TemplateBinding Margin}" Background="{TemplateBinding Background}">
-                        <Grid>
-                            <ContentPresenter Content="{TemplateBinding Property=ContentControl.Content}" />
-                        </Grid>
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup Name="Common">
-                                <VisualState x:Name="Pressed">
-                                    <Storyboard>
-                                        <ThicknessAnimation To="2" Duration="0:0:0.1" Storyboard.TargetProperty="BorderThickness"/>
-                                        <ColorAnimation To="Yellow" Duration="0:0:0.1" Storyboard.TargetProperty="BorderBrush.(SolidColorBrush.Color)"/>
-                                    </Storyboard>
-                                </VisualState>
-                                <VisualState x:Name="Normal">
-                                    <Storyboard>
-                                        <ThicknessAnimation To="0" Storyboard.TargetProperty="BorderThickness"/>
-                                        <ColorAnimation To="White" Storyboard.TargetProperty="BorderBrush.(SolidColorBrush.Color)"/>
-                                    </Storyboard>
-                                </VisualState>
-                            </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Background" Value="#FF686868"/>
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="False">
-                            <Setter Property="Background" Value="Transparent"/>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </DockPanel.Resources>
-            <Image Source="Images/AppIcon.ico"/>
-            <TextBlock Name="TBCaption" Text="ClipboardTextTyper" DockPanel.Dock="Left" Foreground="White" VerticalAlignment="Center" FontSize="20" MouseEnter="TBCaptionMouseEnter" Margin="5 0 0 0"/>
-            <Button Name="BExit" Template="{StaticResource ControlButton}" DockPanel.Dock="Right" Click="CloseApp">
-                <Image Name="ButtonImage" ToolTip="Выйти" OpacityMask="#FF686868">
-                    <Image.Style>
-                        <Style TargetType="Image">
-                            <Setter Property="Source" Value="Images/bExitNotSelected.png"/>
-                            <Style.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Source" Value="Images/bExitSelected.png"/>
-                                </Trigger>
-                                <DataTrigger Binding="{Binding IsPressed,ElementName=BExit}" Value="True">
-                                    <Setter Property="Source" Value="Images/bExitSelected.png"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Image.Style>
-                </Image>
-            </Button>
-            <Button x:Name="BMinimize" Template="{StaticResource ControlButton}" Margin="1 0 0 0" DockPanel.Dock="Right" Click="MinimizeApp">
-                <Image ToolTip="Свернуть">
-                    <Image.Style>
-                        <Style TargetType="Image">
-                            <Setter Property="Source" Value="Images/bMinimizeNotSelected.png"/>
-                            <Style.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Source" Value="Images/bMinimizeSelected.png"/>
-                                </Trigger>
-                                <DataTrigger Binding="{Binding IsPressed,ElementName=BMinimize}" Value="True">
-                                    <Setter Property="Source" Value="Images/bMinimizeSelected.png"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Image.Style>
-                </Image>
-            </Button>
-=======
             <Image Source="Images/AppIcon.ico"/>
             <TextBlock Name="TBCaption" Text="ClipboardTextTyper" DockPanel.Dock="Left" Foreground="White" Width="Auto" VerticalAlignment="Center" FontSize="20" MouseEnter="TBCaptionMouseEnter" Margin="5 0 0 0"/>
             <controls:WindowControlButton HorizontalAlignment="Right" ButtonBase.Click="CloseApp" StartImagePath="Images/bExitNotSelected.png" MouseOverImagePath="Images/bExitSelected.png" DockPanel.Dock="Right" Width="40"/>
             <controls:WindowControlButton HorizontalAlignment="Right" ButtonBase.Click="MinimizeApp" StartImagePath="Images/bMinimizeNotSelected.png" MouseOverImagePath="Images/bMinimizeSelected.png" DockPanel.Dock="Right" Width="40"/>
->>>>>>> dev
         </DockPanel>
         <!--Общая сетка для настроек и сочетаний клавиш-->
         <Grid Grid.Row="1">
@@ -134,42 +29,103 @@
             <GroupBox Header="Настройки" Foreground="White" FontSize="17">
                 <Grid>
                     <Grid.Resources>
+                       
                         <Style TargetType="Label">
                             <Setter Property="HorizontalAlignment" Value="Center"/>
                             <Setter Property="VerticalAlignment" Value="Center"/>
                             <Setter Property="Foreground" Value="White"/>
                         </Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="BorderBrush">
+                                <Setter.Value>
+                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                        <GradientStop Color="Transparent" Offset="0"/>
+                                        <GradientStop Color="Transparent" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="BorderThickness" Value="2"/>
+                            <Setter Property="Margin" Value="0 3 0 0"/>
+                            <Style.Triggers>
+                                <EventTrigger RoutedEvent="MouseLeave">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation To="Transparent" Duration="0:0:0.25" Storyboard.TargetProperty="BorderBrush.GradientStops[0].Color"/>
+                                            <ColorAnimation To="Transparent" Duration="0:0:0.25" Storyboard.TargetProperty="BorderBrush.GradientStops[1].Color"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                                <EventTrigger RoutedEvent="MouseEnter">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <Storyboard>
+                                                <ColorAnimation To="#00F260" Duration="0:0:0.25" Storyboard.TargetProperty="BorderBrush.GradientStops[0].Color"/>
+                                                <ColorAnimation To="#0575e6" Duration="0:0:0.25" Storyboard.TargetProperty="BorderBrush.GradientStops[1].Color"/>
+                                            </Storyboard>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Style.Triggers>
+                        </Style>
                     </Grid.Resources>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="45"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Label Content="Задержка при печати символа" FontSize="15" Margin="5 0 5 0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10 0 10 0">
-                        <controls:SelectRadioButton x:Name="HideTimeInput" Text="Выключить" GroupName="Delay"/>
-                        <controls:SelectRadioButton x:Name="ShowTimeInput" Text="Включить" GroupName="Delay" Margin="5 0 0 0" Checked="ShowTimeInputChecked" Unchecked="ShowTimeInputChecked"/>
-                    </StackPanel>
-                    <StackPanel Grid.Column="1" Grid.Row="1" Name="TimeInput">
-                        <TextBlock Text="{Binding ElementName=Slider, Path=Value, StringFormat={}{0} мс}" Foreground="White" HorizontalAlignment="Center"/>
-                        <Slider Name="Slider" VerticalAlignment="Top" Maximum="500" Minimum="2" Foreground="#FFCD2F2F" SmallChange="10" ValueChanged="SliderValueChanged" Value="{Binding Path=DelayTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="#FF454547" BorderThickness="2" Margin="10 0 10 0" TickFrequency="10" LargeChange="100" Background="#FF232222"/>
-                    </StackPanel>
-                    <StackPanel Grid.Row="3" Margin="0 10 0 0">
-                        <Label Content="Символы для удаления"/>
-                        <Label Content="Статус печати"/>
-                    </StackPanel>
-                    <StackPanel Grid.Row="3" Grid.Column="1" Margin="0 10 0 0">
-                        <TextBox FontSize="18" Grid.Row="2" Grid.Column="1" Height="30" Margin ="10 0 10 0" VerticalAlignment="Center" Foreground="White" Background="#FF454547" VerticalContentAlignment="Center" MaxLength="16" BorderThickness="2" Text="{Binding CharsToDelete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBoxTextChanged"/>
-                        <Label Content="{Binding TypingStatus, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                    </StackPanel>
+
+                    <!--Блок с задержкой-->
+                    <Border>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" Name="BiggestColumn"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Row="0" Content="Задержка при печати символа" FontSize="15" HorizontalAlignment="Center"/>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10 5 10 0">
+                                <controls:SelectRadioButton x:Name="HideTimeInput" Text="Выключить" GroupName="Delay"/>
+                                <controls:SelectRadioButton x:Name="ShowTimeInput" Text="Включить" GroupName="Delay" Margin="5 0 0 0" Checked="ShowTimeInputChecked" Unchecked="ShowTimeInputChecked"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Name="TimeInput" Margin="0 3 0 5" Grid.Row="1">
+                                <TextBlock Text="{Binding ElementName=Slider, Path=Value, StringFormat={}{0} мс}" Foreground="White" HorizontalAlignment="Center"/>
+                                <Slider Name="Slider" VerticalAlignment="Top" Maximum="500" Minimum="2" Foreground="#FFCD2F2F" SmallChange="10" ValueChanged="SliderValueChanged" Value="{Binding Path=DelayTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="#FF454547" BorderThickness="2" Margin="10 0 10 0" TickFrequency="10" LargeChange="100" Background="#FF232222"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                    <!--Блок с символами для удаления и статус печати-->
+                    <Border Grid.Row="1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="{Binding BiggestColumn}"/>
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Label Content="Символы для удаления"/>
+                            <Label Grid.Row="1" Content="Статус печати" Margin="0 0 0 3"/>
+                            <TextBox Margin="0 7 0 5" Width="200" Grid.Column="1" FontSize="18"  Height="30" VerticalAlignment="Center" Foreground="White" Background="#FF454547" VerticalContentAlignment="Center" MaxLength="16" BorderThickness="2" Text="{Binding CharsToDelete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBoxTextChanged"/>
+                            <Label Grid.Column="1" Grid.Row="1" Content="{Binding TypingStatus, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Margin="0 5 0 5"/>
+                        </Grid>
+                    </Border>
+                    <!--Блок с переключением уведомления и для паузы-->
+                    <Border Grid.Row="2">
+                        <StackPanel>
+                            <CheckBox Margin="0 15 0 5" Grid.Row="3" IsChecked="{Binding ShouldChangeWindowOnPause, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="При паузе переключать на это приложение" Foreground="White" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Checked="SaveSettings" Unchecked="SaveSettings"/>
+                            <CheckBox Margin="0 5 0 15" Grid.Row="4" IsChecked="{Binding ShouldNotifyOnPrintComplete, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="Уведомлять о завершении печати" Foreground="White" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" VerticalContentAlignment="Center" Checked="SaveSettings" Unchecked="SaveSettings"/>
+                        </StackPanel>
+                    </Border>
                 </Grid>
             </GroupBox>
             <!--Панель с клавишами-->
-            <GroupBox Header="Клавиши" Foreground="White" FontSize="17" Grid.Column="1" Margin="1 0 0 0">
+            <GroupBox Header="Сочетания клавиш" Foreground="White" FontSize="17" Grid.Column="1" Margin="1 0 0 0">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -180,13 +136,15 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid.Resources>
                         <Style  x:Key="Key" TargetType="TextBlock">
                             <Setter Property="Grid.Column" Value="1"/>
                             <Setter Property="TextAlignment" Value="Center"/>
                             <Setter Property="FontSize" Value="16"/>
-                            <Setter Property="Margin" Value="10 0 10 0"/>
+                            <Setter Property="Margin" Value="10 5 10 5"/>
                         </Style>
                         <Style x:Key="Headling" TargetType="TextBlock">
                             <Setter Property="FontSize" Value="22"/>
@@ -196,12 +154,11 @@
                         <Style x:Key="KeyDescription" TargetType="TextBlock">
                             <Setter Property="FontSize" Value="15"/>
                             <Setter Property="TextAlignment" Value="Left"/>
+                            <Setter Property="Margin" Value="0 5 0 5"/>
                         </Style>
                     </Grid.Resources>
                     <!--Запуск копирования-->
-                    <TextBlock Style="{StaticResource Headling}">
-                        <Run Text="Запуск копирования"/>
-                    </TextBlock>
+                    <TextBlock Style="{StaticResource Headling}" Text="Запуск копирования"/>
                     <TextBlock Style="{StaticResource KeyDescription}" Grid.Row="1">
                         <Run Text="Начать печать"/>
                         <LineBreak/>
@@ -217,9 +174,7 @@
                         <Run Text="F2"/>
                     </TextBlock>
                     <!--Управление печатью-->
-                    <TextBlock Grid.Row="2" Style="{StaticResource Headling}">
-                        <Run Text="Управление печатью"/>
-                    </TextBlock>
+                    <TextBlock Grid.Row="2" Style="{StaticResource Headling}" Text="Управление печатью"/>
                     <TextBlock Style="{StaticResource KeyDescription}" Grid.Row="3">
                         <Run Text="Приостановить печать для выбора функции"/>
                         <LineBreak/>
@@ -237,6 +192,17 @@
                         <Run Text="Shift"/>
                         <Run Text="+"/>
                         <Run Text="F12"/>
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Headling}" Text="Управляющие символы" Grid.Row="4"/>
+                    <TextBlock Grid.Row="5" Style="{StaticResource KeyDescription}">
+                        <Run Text="Горизонтальная табуляция"/>
+                        <LineBreak/>
+                        <Run Text="Переход на новую строку"/>
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Key}" Grid.Row="5">
+                        <Run Text="\t"/>
+                        <LineBreak/>
+                        <Run Text="\n"/>
                     </TextBlock>
                 </Grid>
             </GroupBox>
