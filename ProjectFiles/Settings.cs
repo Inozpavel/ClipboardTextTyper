@@ -17,6 +17,9 @@ namespace WpfClipboardTextTyper
 
         public string CharsToDelete { get; set; } = "";
 
+        public bool ShouldChangeWindowOnPause { get; set; } = true;
+        public bool ShouldNotifyOnPrintComplete { get; set; } = true;
+
         [JsonIgnore]
         private string _typingStatus = "Печать не запущена";
 

@@ -45,6 +45,12 @@ namespace WpfClipboardTextTyper
         #region Win32
 
         [DllImport("user32.dll")]
+        private static extern IntPtr SetFocus(IntPtr hMem);
+
+        [DllImport("user32.dll")]
+        private static extern bool ShowWindow(IntPtr hMem, int nCmdShow);
+
+        [DllImport("user32.dll")]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
 
         [DllImport("user32.dll")]
@@ -72,6 +78,8 @@ namespace WpfClipboardTextTyper
         private static extern int GlobalSize(IntPtr hMem);
 
         private const uint CF_UNICODETEXT = 13U;
+        private const int SW_SHOWNORMAL = 1;
+        private const int SW_MINIMIZE = 6;
 
         #endregion
 
@@ -96,7 +104,11 @@ namespace WpfClipboardTextTyper
             {
                 _shouldPause = true;
                 MainWindow.userSettings.TypingStatus = "Печать приостановлена";
-                SetForegroundWindow(window.MainWindowHandle);
+                if (MainWindow.userSettings.ShouldChangeWindowOnPause)
+                {
+                    SetForegroundWindow(window.MainWindowHandle);
+                    ShowWindow(window.MainWindowHandle, SW_SHOWNORMAL);
+                }
             }
         }
 
@@ -175,6 +187,7 @@ namespace WpfClipboardTextTyper
                 return;
             try
             {
+                Stopwatch stopwatch = Stopwatch.StartNew();
                 foreach (char symbol in BufferText)
                 {
                     while (_isShiftPressed || _shouldPause)
@@ -197,6 +210,21 @@ namespace WpfClipboardTextTyper
                     else
                         Thread.Sleep(1);
                 }
+                stopwatch.Stop();
+
+                if (MainWindow.userSettings.ShouldNotifyOnPrintComplete)
+                {
+                    TimeSpan resultTime = stopwatch.Elapsed;
+
+                    string resultTimeInfo = string.Format("Часы:\t\t{0:00}\nМинуты:\t\t{1:00}\nСекунды:\t{2:00}\nМилисекунды:\t{3:000}",
+                        resultTime.Hours, resultTime.Minutes, resultTime.Seconds, resultTime.Milliseconds);
+
+                    ShowWindow(window.MainWindowHandle, SW_MINIMIZE);
+                    SetForegroundWindow(window.MainWindowHandle);
+                    MessageBox.Show($"Программа завершила печать, время печати:\n{resultTimeInfo}",
+                        "Печать завершена", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ShowWindow(window.MainWindowHandle, SW_SHOWNORMAL);
+                }
             }
             catch
             {
@@ -205,6 +233,7 @@ namespace WpfClipboardTextTyper
             }
             MainWindow.userSettings.TypingStatus = "Печать не запущена";
             _isTyping = false;
+
         }
 
         private static char[] FilterText(Settings settings)

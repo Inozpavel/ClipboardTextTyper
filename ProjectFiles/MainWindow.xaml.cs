@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 
 namespace WpfClipboardTextTyper
@@ -36,7 +37,6 @@ namespace WpfClipboardTextTyper
             InitializeComponent();
             DataContext = userSettings;
             Slider.Value = sliderTime;
-
             _showHalfTimeInput.Completed += new EventHandler((x, y) =>
             TimeInput.BeginAnimation(OpacityProperty, _showTimeInput));
 
@@ -92,7 +92,14 @@ namespace WpfClipboardTextTyper
             TimeInput.Opacity = HideTimeInput.IsChecked ? 0 : 1;
             TextTyper.KeysListening.Initialize();
             TextTyper.window = Process.GetProcessesByName("ClipboardTextTyper")[0];
+            DoubleAnimation showHalfOpacity = new DoubleAnimation(0, 0.2, new Duration(new TimeSpan(0, 0, 0, 1)));
+            showHalfOpacity.Completed += (x, y) =>
+            {
+                BeginAnimation(Window.OpacityProperty, new DoubleAnimation(0.2, 1, new Duration(new TimeSpan(0, 0, 0, 2))));
+            };
+            BeginAnimation(Window.OpacityProperty, showHalfOpacity);
         }
+
 
         private void ShowTimeInputChecked(object sender, RoutedEventArgs e)
         {
@@ -123,6 +130,11 @@ namespace WpfClipboardTextTyper
         private void MinimizeApp(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
+        }
+
+        private void SaveSettings(object sender, RoutedEventArgs e)
+        {
+            Settings.SaveSetting(userSettings);
         }
     }
 }
