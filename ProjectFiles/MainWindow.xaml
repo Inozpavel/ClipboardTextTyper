@@ -111,7 +111,7 @@
                             </Grid.ColumnDefinitions>
                             <Label Content="Символы для удаления"/>
                             <Label Grid.Row="1" Content="Статус печати" Margin="0 0 0 3"/>
-                            <TextBox Margin="0 7 0 5" Width="200" Grid.Column="1" FontSize="18"  Height="30" VerticalAlignment="Center" Foreground="White" Background="#FF454547" VerticalContentAlignment="Center" MaxLength="16" BorderThickness="2" Text="{Binding CharsToDelete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBoxTextChanged"/>
+                            <TextBox Margin="0 7 0 5" Width="200" Grid.Column="1" FontSize="18"  Height="30" VerticalAlignment="Center" Foreground="White" Background="#FF454547" VerticalContentAlignment="Center" BorderThickness="2" Text="{Binding CharsToDelete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBoxTextChanged"/>
                             <Label Grid.Column="1" Grid.Row="1" Content="{Binding TypingStatus, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Margin="0 5 0 5"/>
                         </Grid>
                     </Border>
