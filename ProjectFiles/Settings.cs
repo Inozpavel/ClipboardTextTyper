@@ -1,13 +1,15 @@
 ﻿using System.ComponentModel;
 using System.IO;
 using System.Windows;
-using Newtonsoft.Json;
+using System.Xml.Serialization;
 
 namespace WpfClipboardTextTyper
 {
-    internal class Settings : INotifyPropertyChanged
+    public class Settings : INotifyPropertyChanged
     {
-        private static readonly string settingsFilePath = @".\Settings.json";
+        private static readonly string settingsFilePath = @".\Settings.xml";
+
+        private readonly static XmlSerializer xmlSerializer = new XmlSerializer(typeof(Settings));
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -20,10 +22,9 @@ namespace WpfClipboardTextTyper
         public bool ShouldChangeWindowOnPause { get; set; } = true;
         public bool ShouldNotifyOnPrintComplete { get; set; } = true;
 
-        [JsonIgnore]
         private string _typingStatus = "Печать не запущена";
 
-        [JsonIgnore]
+        [XmlIgnore]
         public string TypingStatus
         {
             get => _typingStatus;
@@ -36,13 +37,18 @@ namespace WpfClipboardTextTyper
 
         public static void SaveSetting(Settings settings)
         {
+            FileStream stream = new FileStream(settingsFilePath, FileMode.Create);
             try
             {
-                File.WriteAllText(settingsFilePath, JsonConvert.SerializeObject(settings));
+                xmlSerializer.Serialize(stream, settings);
             }
             catch
             {
                 MessageBox.Show("Не получилось сохранить настройки", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                stream.Close();
             }
         }
 
@@ -50,7 +56,8 @@ namespace WpfClipboardTextTyper
         {
             try
             {
-                return JsonConvert.DeserializeObject<Settings>(File.ReadAllText(settingsFilePath));
+                FileStream stream = new FileStream(settingsFilePath, FileMode.Open);
+                return (Settings)xmlSerializer.Deserialize(stream);
             }
             catch (FileNotFoundException)
             {
