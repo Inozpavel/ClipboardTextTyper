@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using WpfClipboardTextTyper;
@@ -14,7 +15,6 @@ namespace ClipboardTextTyper
         public static DependencyProperty IsCheckedProperty =
         DependencyProperty.Register("IsChecked", typeof(bool), typeof(SelectRadioButton));
 
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public string Text { get; set; }
         public string GroupName { get; set; }
@@ -24,7 +24,7 @@ namespace ClipboardTextTyper
             set
             {
                 SetValue(IsCheckedProperty, value);
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsChecked"));
+                OnPropertyChanged();
             }
         }
 
@@ -61,6 +61,13 @@ namespace ClipboardTextTyper
                 this,
                 MainWindow.userSettings,
             };
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
