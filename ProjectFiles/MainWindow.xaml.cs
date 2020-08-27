@@ -17,30 +17,14 @@ namespace ClipboardTextTyper
         internal static SettingsViewModel userSettings;
         private bool _isAnimanting = false;
 
-        private readonly DoubleAnimation _showHalfTimeInput = new
-            DoubleAnimation(0, 0.6, new Duration(new TimeSpan(0, 0, 0, 0, 600)));
-
-        private readonly DoubleAnimation _showTimeInput = new
-            DoubleAnimation(0.6, 1, new Duration(new TimeSpan(0, 0, 0, 0, 300)));
-
-        private readonly DoubleAnimation _hideHalfTimeInput = new
-            DoubleAnimation(1, 0.6, new Duration(new TimeSpan(0, 0, 0, 0, 600)));
-
-        private readonly DoubleAnimation _hideTimeInput = new
-            DoubleAnimation(0.6, 0, new Duration(new TimeSpan(0, 0, 0, 0, 300)));
-
         public MainWindow()
         {
             userSettings = SettingsViewModel.LoadSettings() ?? new SettingsViewModel();
             int sliderTime = userSettings.DelayTime;
             InitializeComponent();
-            DataContext = userSettings;
             Slider.Value = sliderTime;
-            _showHalfTimeInput.Completed += new EventHandler((x, y) =>
-            TimeInput.BeginAnimation(OpacityProperty, _showTimeInput));
 
-            _hideHalfTimeInput.Completed += new EventHandler((x, y) =>
-            TimeInput.BeginAnimation(OpacityProperty, _hideTimeInput));
+            DataContext = userSettings;
         }
 
         private void DragMoveApp(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -86,33 +70,15 @@ namespace ClipboardTextTyper
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
         {
-            HideTimeInput.IsChecked = !userSettings.ShouldDelayBe;
-            ShowTimeInput.IsChecked = userSettings.ShouldDelayBe;
-            TimeInput.Opacity = HideTimeInput.IsChecked ?? true ? 0 : 1;
+            RBHideTimeInput.IsChecked = !userSettings.ShouldDelayBe;
+            RBShowTimeInput.IsChecked = userSettings.ShouldDelayBe;
             TextTyper.KeysListening.Initialize();
             TextTyper.window = Process.GetProcessesByName("ClipboardTextTyper")[0];
-            DoubleAnimation showHalfOpacity = new DoubleAnimation(0, 0.2, new Duration(new TimeSpan(0, 0, 0, 1)));
-            showHalfOpacity.Completed += (x, y) =>
-            {
-                BeginAnimation(Window.OpacityProperty, new DoubleAnimation(0.2, 1, new Duration(new TimeSpan(0, 0, 0, 2))));
-            };
-            BeginAnimation(Window.OpacityProperty, showHalfOpacity);
         }
 
 
         private void ShowTimeInputChecked(object sender, RoutedEventArgs e)
         {
-            if ((sender as RadioButton).IsChecked ?? false)
-            {
-                TimeInput.BeginAnimation(OpacityProperty, _showHalfTimeInput);
-                //MainWindow.userSettings.ShouldDelayBe = true;
-            }
-            else
-            {
-                TimeInput.BeginAnimation(OpacityProperty, _hideHalfTimeInput);
-                //MainWindow.userSettings.ShouldDelayBe = false;
-            }
-
             SettingsViewModel.SaveSetting(userSettings);
         }
 

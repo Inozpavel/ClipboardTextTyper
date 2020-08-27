@@ -7,8 +7,8 @@ namespace ClipboardTextTyper
     /// </summary>
     public partial class WindowControlButton : UserControl
     {
-        private string _startImagePath { get; set; }
-        private string _mouseOverImagePath { get; set; }
+        private string _startImagePath;
+        private string _mouseOverImagePath;
 
         public string StartImagePath
         {

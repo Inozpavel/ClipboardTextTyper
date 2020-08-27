@@ -7,6 +7,23 @@
         mc:Ignorable="d"
         Title="ClipboardTextTyper"
         WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="NoResize" Loaded="WindowLoaded" SizeToContent="WidthAndHeight">
+    <Window.Style>
+        <Style TargetType="Window">
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Loaded">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
+                                <LinearDoubleKeyFrame KeyTime="0:0:0" Value="0"/>
+                                <LinearDoubleKeyFrame KeyTime="0:0:1" Value="0.3"/>
+                                <LinearDoubleKeyFrame KeyTime="0:0:2" Value="1"/>
+                            </DoubleAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Style>
     <Window.Resources>
         <controls:SettingsViewModel x:Key="SettingsViewSource"/>
     </Window.Resources>
@@ -97,12 +114,34 @@
                                 <StackPanel.Resources>
                                     <ResourceDictionary Source="CustomControls/AnimatedRadioButton.xaml"/>
                                 </StackPanel.Resources>
-                                <RadioButton x:Name="HideTimeInput" Style="{StaticResource AnimatedRadioButton}" Content="Выключить" GroupName="Delay"/>
-                                <RadioButton x:Name="ShowTimeInput" Style="{StaticResource AnimatedRadioButton}" Content="Включить" GroupName="Delay" IsChecked="{Binding ShouldDelayBe,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="5 0 0 0" Checked="ShowTimeInputChecked" Unchecked="ShowTimeInputChecked"/>
+                                <RadioButton GroupName="Delay" Name="RBHideTimeInput" Style="{StaticResource AnimatedRadioButton}" Content="Выключить"/>
+                                <RadioButton GroupName="Delay" Name="RBShowTimeInput" Style="{StaticResource AnimatedRadioButton}" Content="Включить" IsChecked="{Binding ShouldDelayBe,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="5 0 0 0" Checked="ShowTimeInputChecked" Unchecked="ShowTimeInputChecked"/>
                             </StackPanel>
                             <StackPanel Grid.Column="1" Name="TimeInput" Margin="0 3 0 5" Grid.Row="1">
                                 <TextBlock Text="{Binding ElementName=Slider, Path=Value, StringFormat={}{0} мс}" Foreground="White" HorizontalAlignment="Center"/>
                                 <Slider Name="Slider" VerticalAlignment="Top" Maximum="500" Minimum="2" Foreground="#FFCD2F2F" SmallChange="10" ValueChanged="SliderValueChanged" Value="{Binding Path=DelayTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="#FF454547" BorderThickness="2" Margin="10 0 10 0" TickFrequency="10" LargeChange="100" Background="#FF232222"/>
+                                <StackPanel.Style>
+                                    <Style TargetType="StackPanel">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ShouldDelayBe}" Value="True">
+                                                <DataTrigger.EnterActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation To="1" Duration="0:0:0.5" Storyboard.TargetProperty="Opacity"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </DataTrigger.EnterActions>
+                                                <DataTrigger.ExitActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation To="0" Duration="0:0:0.5"  Storyboard.TargetProperty="Opacity"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </DataTrigger.ExitActions>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Style>
                             </StackPanel>
                         </Grid>
                     </Border>

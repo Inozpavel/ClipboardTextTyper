@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Xml.Serialization;
 
@@ -13,8 +14,16 @@ namespace ClipboardTextTyper
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public bool ShouldDelayBe { get; 
-            set; } = false;
+        private bool _shouldDelayBe = false;
+        public bool ShouldDelayBe
+        {
+            get => _shouldDelayBe;
+            set
+            {
+                _shouldDelayBe = value;
+                OnPropertyChanged();
+            }
+        }
 
         public int DelayTime { get; set; } = 10;
 
@@ -32,7 +41,7 @@ namespace ClipboardTextTyper
             set
             {
                 _typingStatus = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("TypingStatus"));
+                OnPropertyChanged();
             }
         }
 
@@ -72,6 +81,10 @@ namespace ClipboardTextTyper
                     "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 return null;
             }
+        }
+        private void OnPropertyChanged([CallerMemberName]string paramName="")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(paramName));
         }
     }
 }
