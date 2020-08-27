@@ -7,14 +7,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
 
-namespace WpfClipboardTextTyper
+namespace ClipboardTextTyper
 {
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        internal static Settings userSettings;
+        internal static SettingsViewModel userSettings;
         private bool _isAnimanting = false;
 
         private readonly DoubleAnimation _showHalfTimeInput = new
@@ -31,7 +31,7 @@ namespace WpfClipboardTextTyper
 
         public MainWindow()
         {
-            userSettings = Settings.LoadSettings() ?? new Settings();
+            userSettings = SettingsViewModel.LoadSettings() ?? new SettingsViewModel();
             int sliderTime = userSettings.DelayTime;
             InitializeComponent();
             DataContext = userSettings;
@@ -51,7 +51,7 @@ namespace WpfClipboardTextTyper
         private void SliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             Slider.Value = Math.Round(e.NewValue);
-            Settings.SaveSetting(userSettings);
+            SettingsViewModel.SaveSetting(userSettings);
         }
 
         private void TBCaptionMouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
@@ -88,7 +88,7 @@ namespace WpfClipboardTextTyper
         {
             HideTimeInput.IsChecked = !userSettings.ShouldDelayBe;
             ShowTimeInput.IsChecked = userSettings.ShouldDelayBe;
-            TimeInput.Opacity = HideTimeInput.IsChecked ? 0 : 1;
+            TimeInput.Opacity = HideTimeInput.IsChecked ?? true ? 0 : 1;
             TextTyper.KeysListening.Initialize();
             TextTyper.window = Process.GetProcessesByName("ClipboardTextTyper")[0];
             DoubleAnimation showHalfOpacity = new DoubleAnimation(0, 0.2, new Duration(new TimeSpan(0, 0, 0, 1)));
@@ -105,20 +105,20 @@ namespace WpfClipboardTextTyper
             if ((sender as RadioButton).IsChecked ?? false)
             {
                 TimeInput.BeginAnimation(OpacityProperty, _showHalfTimeInput);
-                MainWindow.userSettings.ShouldDelayBe = true;
+                //MainWindow.userSettings.ShouldDelayBe = true;
             }
             else
             {
                 TimeInput.BeginAnimation(OpacityProperty, _hideHalfTimeInput);
-                MainWindow.userSettings.ShouldDelayBe = false;
+                //MainWindow.userSettings.ShouldDelayBe = false;
             }
 
-            Settings.SaveSetting(userSettings);
+            SettingsViewModel.SaveSetting(userSettings);
         }
 
         private void TextBoxTextChanged(object sender, TextChangedEventArgs e)
         {
-            Settings.SaveSetting(userSettings);
+            SettingsViewModel.SaveSetting(userSettings);
         }
 
         private void CloseApp(object sender, RoutedEventArgs e)
@@ -133,7 +133,7 @@ namespace WpfClipboardTextTyper
 
         private void SaveSettings(object sender, RoutedEventArgs e)
         {
-            Settings.SaveSetting(userSettings);
+            SettingsViewModel.SaveSetting(userSettings);
         }
     }
 }

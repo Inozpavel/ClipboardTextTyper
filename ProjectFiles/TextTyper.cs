@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace WpfClipboardTextTyper
+namespace ClipboardTextTyper
 {
     internal static class TextTyper
     {
@@ -236,26 +236,26 @@ namespace WpfClipboardTextTyper
 
         }
 
-        private static char[] FilterText(Settings settings)
+        private static char[] FilterText(SettingsViewModel settings)
         {
             string bufferText = Regex.Replace(GetBufferText() ?? "", @"\r", "");
 
-            var spacesToDelete = Regex
+            System.Collections.Generic.List<string> spacesToDelete = Regex
                 .Matches(settings.CharsToDelete, @"\s+")
                 .Cast<Match>().Select(x => x.Value).ToList();
 
             string symbolsToDelete = settings.CharsToDelete;
 
-            var commonSymbols = string
+            System.Collections.Generic.List<string> commonSymbols = string
                 .Join("", Regex.Split(symbolsToDelete, @"\\\w")
                 .Where(x => !string.IsNullOrEmpty(x)).ToList())
                 .Select(x => x.ToString()).Where(x => x != " ").ToList();
 
-            var spesialSymbols = Regex
+            System.Collections.Generic.List<string> spesialSymbols = Regex
                 .Matches(symbolsToDelete, @"\\\w")
                 .Cast<Match>().Select(x => x.Value).ToList();
 
-            var finalArrayToDelete = commonSymbols
+            System.Collections.Generic.IEnumerable<string> finalArrayToDelete = commonSymbols
                 .Union(spesialSymbols).Union(spacesToDelete);
 
             foreach (string symbol in finalArrayToDelete)

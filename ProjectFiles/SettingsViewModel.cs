@@ -3,17 +3,18 @@ using System.IO;
 using System.Windows;
 using System.Xml.Serialization;
 
-namespace WpfClipboardTextTyper
+namespace ClipboardTextTyper
 {
-    public class Settings : INotifyPropertyChanged
+    public class SettingsViewModel : INotifyPropertyChanged
     {
         private static readonly string settingsFilePath = @".\Settings.xml";
 
-        private readonly static XmlSerializer xmlSerializer = new XmlSerializer(typeof(Settings));
+        private static readonly XmlSerializer xmlSerializer = new XmlSerializer(typeof(SettingsViewModel));
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public bool ShouldDelayBe { get; set; } = false;
+        public bool ShouldDelayBe { get; 
+            set; } = false;
 
         public int DelayTime { get; set; } = 10;
 
@@ -35,7 +36,7 @@ namespace WpfClipboardTextTyper
             }
         }
 
-        public static void SaveSetting(Settings settings)
+        public static void SaveSetting(SettingsViewModel settings)
         {
             FileStream stream = new FileStream(settingsFilePath, FileMode.Create);
             try
@@ -52,12 +53,12 @@ namespace WpfClipboardTextTyper
             }
         }
 
-        public static Settings LoadSettings()
+        public static SettingsViewModel LoadSettings()
         {
             try
             {
                 FileStream stream = new FileStream(settingsFilePath, FileMode.Open);
-                return (Settings)xmlSerializer.Deserialize(stream);
+                return (SettingsViewModel)xmlSerializer.Deserialize(stream);
             }
             catch (FileNotFoundException)
             {
@@ -73,6 +74,4 @@ namespace WpfClipboardTextTyper
             }
         }
     }
-
-
 }
