@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace WpfClipboardTextTyper
+namespace ClipboardTextTyper
 {
     /// <summary>
     /// Логика взаимодействия для App.xaml
