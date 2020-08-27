@@ -1,4 +1,4 @@
-﻿<Window x:Class="WpfClipboardTextTyper.MainWindow"
+﻿<Window x:Class="ClipboardTextTyper.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,6 +7,12 @@
         mc:Ignorable="d"
         Title="ClipboardTextTyper"
         WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="NoResize" Loaded="WindowLoaded" SizeToContent="WidthAndHeight">
+    <Window.Resources>
+        <controls:SettingsViewModel x:Key="SettingsViewSource"/>
+    </Window.Resources>
+    <Window.DataContext>
+        <Binding Source="{StaticResource SettingsViewSource}"/>
+    </Window.DataContext>
     <Grid Background="#FF2D2D30">
         <Grid.RowDefinitions>
             <RowDefinition x:Name="UpperBar" Height="34"/>
@@ -29,7 +35,6 @@
             <GroupBox Header="Настройки" Foreground="White" FontSize="17">
                 <Grid>
                     <Grid.Resources>
-                       
                         <Style TargetType="Label">
                             <Setter Property="HorizontalAlignment" Value="Center"/>
                             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -89,8 +94,11 @@
 
                             <Label Grid.Row="0" Content="Задержка при печати символа" FontSize="15" HorizontalAlignment="Center"/>
                             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10 5 10 0">
-                                <controls:SelectRadioButton x:Name="HideTimeInput" Text="Выключить" GroupName="Delay"/>
-                                <controls:SelectRadioButton x:Name="ShowTimeInput" Text="Включить" GroupName="Delay" Margin="5 0 0 0" Checked="ShowTimeInputChecked" Unchecked="ShowTimeInputChecked"/>
+                                <StackPanel.Resources>
+                                    <ResourceDictionary Source="CustomControls/AnimatedRadioButton.xaml"/>
+                                </StackPanel.Resources>
+                                <RadioButton x:Name="HideTimeInput" Style="{StaticResource AnimatedRadioButton}" Content="Выключить" GroupName="Delay"/>
+                                <RadioButton x:Name="ShowTimeInput" Style="{StaticResource AnimatedRadioButton}" Content="Включить" GroupName="Delay" IsChecked="{Binding ShouldDelayBe,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="5 0 0 0" Checked="ShowTimeInputChecked" Unchecked="ShowTimeInputChecked"/>
                             </StackPanel>
                             <StackPanel Grid.Column="1" Name="TimeInput" Margin="0 3 0 5" Grid.Row="1">
                                 <TextBlock Text="{Binding ElementName=Slider, Path=Value, StringFormat={}{0} мс}" Foreground="White" HorizontalAlignment="Center"/>
