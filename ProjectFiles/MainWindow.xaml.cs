@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Animation;
 
 namespace ClipboardTextTyper
 {
@@ -20,6 +19,7 @@ namespace ClipboardTextTyper
         public MainWindow()
         {
             userSettings = SettingsViewModel.LoadSettings() ?? new SettingsViewModel();
+
             int sliderTime = userSettings.DelayTime;
             InitializeComponent();
             Slider.Value = sliderTime;

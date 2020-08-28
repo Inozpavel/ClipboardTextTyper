@@ -10,11 +10,11 @@ namespace ClipboardTextTyper
     {
         private static readonly string settingsFilePath = @".\Settings.xml";
 
-        private static readonly XmlSerializer xmlSerializer = new XmlSerializer(typeof(SettingsViewModel));
-
-        public event PropertyChangedEventHandler PropertyChanged;
+        private static readonly XmlSerializer xmlSerializer = new
+            XmlSerializer(typeof(SettingsViewModel));
 
         private bool _shouldDelayBe = false;
+
         public bool ShouldDelayBe
         {
             get => _shouldDelayBe;
@@ -30,6 +30,7 @@ namespace ClipboardTextTyper
         public string CharsToDelete { get; set; } = "";
 
         public bool ShouldChangeWindowOnPause { get; set; } = true;
+
         public bool ShouldNotifyOnPrintComplete { get; set; } = true;
 
         private string _typingStatus = "Печать не запущена";
@@ -47,26 +48,23 @@ namespace ClipboardTextTyper
 
         public static void SaveSetting(SettingsViewModel settings)
         {
-            FileStream stream = new FileStream(settingsFilePath, FileMode.Create);
+            using var stream = new FileStream(settingsFilePath, FileMode.Create);
             try
             {
                 xmlSerializer.Serialize(stream, settings);
             }
             catch
             {
-                MessageBox.Show("Не получилось сохранить настройки", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            finally
-            {
-                stream.Close();
+                MessageBox.Show("Не получилось сохранить настройки", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         public static SettingsViewModel LoadSettings()
         {
+            using var stream = new FileStream(settingsFilePath, FileMode.Open);
             try
             {
-                FileStream stream = new FileStream(settingsFilePath, FileMode.Open);
                 return (SettingsViewModel)xmlSerializer.Deserialize(stream);
             }
             catch (FileNotFoundException)
@@ -82,7 +80,10 @@ namespace ClipboardTextTyper
                 return null;
             }
         }
-        private void OnPropertyChanged([CallerMemberName]string paramName="")
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string paramName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(paramName));
         }

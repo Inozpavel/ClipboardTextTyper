@@ -24,17 +24,12 @@
             </Style.Triggers>
         </Style>
     </Window.Style>
-    <Window.Resources>
-        <controls:SettingsViewModel x:Key="SettingsViewSource"/>
-    </Window.Resources>
-    <Window.DataContext>
-        <Binding Source="{StaticResource SettingsViewSource}"/>
-    </Window.DataContext>
     <Grid Background="#FF2D2D30">
         <Grid.RowDefinitions>
             <RowDefinition x:Name="UpperBar" Height="34"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+        
         <!--Верхняя рамка с кнопками управления окном-->
         <DockPanel HorizontalAlignment="Stretch" Background="#FF252526" MouseLeftButtonDown="DragMoveApp">
             <Image Source="Images/AppIcon.ico"/>
@@ -42,12 +37,14 @@
             <controls:WindowControlButton HorizontalAlignment="Right" ButtonBase.Click="CloseApp" StartImagePath="Images/bExitNotSelected.png" MouseOverImagePath="Images/bExitSelected.png" DockPanel.Dock="Right" Width="40"/>
             <controls:WindowControlButton HorizontalAlignment="Right" ButtonBase.Click="MinimizeApp" StartImagePath="Images/bMinimizeNotSelected.png" MouseOverImagePath="Images/bMinimizeSelected.png" DockPanel.Dock="Right" Width="40"/>
         </DockPanel>
+        
         <!--Общая сетка для настроек и сочетаний клавиш-->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
+            
             <!--Панель с настройками-->
             <GroupBox Header="Настройки" Foreground="White" FontSize="17">
                 <Grid>
@@ -91,12 +88,13 @@
                             </Style.Triggers>
                         </Style>
                     </Grid.Resources>
+                    
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-
+                    
                     <!--Блок с задержкой-->
                     <Border>
                         <Grid>
@@ -145,7 +143,8 @@
                             </StackPanel>
                         </Grid>
                     </Border>
-                    <!--Блок с символами для удаления и статус печати-->
+                    
+                    <!--Блок с символами для удаления и статусом печати-->
                     <Border Grid.Row="1">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -162,7 +161,8 @@
                             <Label Grid.Column="1" Grid.Row="1" Content="{Binding TypingStatus, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Margin="0 5 0 5"/>
                         </Grid>
                     </Border>
-                    <!--Блок с переключением уведомления и для паузы-->
+                    
+                    <!--Блок с выбором переключения на приложение во время паузы и информацией при завершении печати-->
                     <Border Grid.Row="2">
                         <StackPanel>
                             <CheckBox Margin="0 15 0 5" Grid.Row="3" IsChecked="{Binding ShouldChangeWindowOnPause, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="При паузе переключать на это приложение" Foreground="White" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Checked="SaveSettings" Unchecked="SaveSettings"/>
@@ -171,13 +171,15 @@
                     </Border>
                 </Grid>
             </GroupBox>
-            <!--Панель с клавишами-->
+            
+            <!--Панель с клавишами и их описанием-->
             <GroupBox Header="Сочетания клавиш" Foreground="White" FontSize="17" Grid.Column="1" Margin="1 0 0 0">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
+                    
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
@@ -186,6 +188,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
+                    
                     <Grid.Resources>
                         <Style  x:Key="Key" TargetType="TextBlock">
                             <Setter Property="Grid.Column" Value="1"/>
@@ -204,7 +207,8 @@
                             <Setter Property="Margin" Value="0 5 0 5"/>
                         </Style>
                     </Grid.Resources>
-                    <!--Запуск копирования-->
+                    
+                    <!--Блок запуск копирования-->
                     <TextBlock Style="{StaticResource Headling}" Text="Запуск копирования"/>
                     <TextBlock Style="{StaticResource KeyDescription}" Grid.Row="1">
                         <Run Text="Начать печать"/>
@@ -220,7 +224,8 @@
                         <Run Text="+"/>
                         <Run Text="F2"/>
                     </TextBlock>
-                    <!--Управление печатью-->
+                    
+                    <!--Блок управление печатью-->
                     <TextBlock Grid.Row="2" Style="{StaticResource Headling}" Text="Управление печатью"/>
                     <TextBlock Style="{StaticResource KeyDescription}" Grid.Row="3">
                         <Run Text="Приостановить печать для выбора функции"/>
@@ -240,6 +245,8 @@
                         <Run Text="+"/>
                         <Run Text="F12"/>
                     </TextBlock>
+                    
+                    <!--Блок с управляющими символами-->
                     <TextBlock Style="{StaticResource Headling}" Text="Управляющие символы" Grid.Row="4"/>
                     <TextBlock Grid.Row="5" Style="{StaticResource KeyDescription}">
                         <Run Text="Горизонтальная табуляция"/>
