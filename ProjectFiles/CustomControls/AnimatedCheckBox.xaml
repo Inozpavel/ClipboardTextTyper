@@ -8,30 +8,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="CheckBox">
                     <StackPanel Orientation="Horizontal">
-                        <Ellipse x:Name="BackEllipse" Fill="Transparent" Width="25" Height="25" StrokeThickness="2" Stroke="Transparent">
-                            <Ellipse.Style>
-                                
-                                <!--Анимация кружка при наведении-->
-                                <Style TargetType="Ellipse">
-                                    <Style.Triggers>
-                                        <EventTrigger RoutedEvent="MouseLeave">
-                                            <BeginStoryboard>
-                                                <Storyboard>
-                                                    <ColorAnimation To="Transparent" Duration="0:0:0.5" Storyboard.TargetProperty="Stroke.Color"/>
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                        </EventTrigger>
-                                        <EventTrigger RoutedEvent="MouseEnter">
-                                            <BeginStoryboard>
-                                                <Storyboard>
-                                                    <ColorAnimation To="#FFFFE802" Duration="0:0:0.5" Storyboard.TargetProperty="Stroke.Color"/>
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                        </EventTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Ellipse.Style>
-                        </Ellipse>
+                        <Ellipse x:Name="BackEllipse" Fill="Transparent" Width="25" Height="25" StrokeThickness="2" Stroke="White"/>
                         <Label Content="{TemplateBinding Content}" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                         
                         <!--Визуальные состояния флажка-->
@@ -53,9 +30,27 @@
                     
                     <!--Смена цвета по нажатию-->
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Stroke" Value="#FFFFE802" TargetName="BackEllipse"/>
-                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                                <Condition Property="IsChecked" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Stroke" Value="#FFEA5B5B" TargetName="BackEllipse"/>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                                <Condition Property="IsChecked" Value="False"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Stroke" Value="GreenYellow" TargetName="BackEllipse"/>
+                        </MultiTrigger>
+                        <EventTrigger RoutedEvent="MouseLeave">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation Duration="0:0:0.5" To="Transparent" Storyboard.TargetName="BackEllipse" Storyboard.TargetProperty="Stroke.Color"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
