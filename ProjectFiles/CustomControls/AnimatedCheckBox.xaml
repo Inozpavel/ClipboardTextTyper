@@ -4,53 +4,59 @@
     <Style TargetType="CheckBox" x:Key="AnimatedCheckBox">
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="0 10 0 10"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="CheckBox">
+                    <ControlTemplate.Resources>
+                        <Storyboard x:Key="TestTevert">
+                            <ColorAnimation Duration="0:0:0.5" To="Transparent" Storyboard.TargetName="BackEllipse" Storyboard.TargetProperty="Stroke.Color"/>
+
+                        </Storyboard>
+                    </ControlTemplate.Resources>
                     <StackPanel Orientation="Horizontal">
-                        <Ellipse x:Name="BackEllipse" Fill="Transparent" Width="25" Height="25" StrokeThickness="2" Stroke="White"/>
-                        <Label Content="{TemplateBinding Content}" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                        <Ellipse x:Name="BackEllipse" Fill="Transparent" Width="25" Height="25" StrokeThickness="0" Stroke="Transparent"/>
+                        <Label Name="Text" FontSize="17" Content="{TemplateBinding Content}" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                         
                         <!--Визуальные состояния флажка-->
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="Common">
                                 <VisualState x:Name="Checked">
                                     <Storyboard>
-                                        <ColorAnimation To="GreenYellow" Duration="0:0:0.5" Storyboard.TargetName="BackEllipse" Storyboard.TargetProperty="Fill.Color"/>
+                                        <ColorAnimation To="GreenYellow" Duration="0:0:0.6" Storyboard.TargetName="BackEllipse" Storyboard.TargetProperty="Fill.Color"/>
+                                        <ColorAnimation To="#FFEA5B5B" Duration="0:0:0.6" Storyboard.TargetName="BackEllipse" Storyboard.TargetProperty="Stroke.Color"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Unchecked">
                                     <Storyboard>
-                                        <ColorAnimation To="#FFEA5B5B" Duration="0:0:0.5" Storyboard.TargetName="BackEllipse" Storyboard.TargetProperty="Fill.Color"/>
+                                        <ColorAnimation To="#FFEA5B5B" Duration="0:0:0.6" Storyboard.TargetName="BackEllipse" Storyboard.TargetProperty="Fill.Color"/>
+                                        <ColorAnimation To="GreenYellow" Duration="0:0:0.6" Storyboard.TargetName="BackEllipse" Storyboard.TargetProperty="Stroke.Color"/>
                                     </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
                     </StackPanel>
                     
-                    <!--Смена цвета по нажатию-->
+                    <!--Анимация при наведении-->
                     <ControlTemplate.Triggers>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsMouseOver" Value="True"/>
-                                <Condition Property="IsChecked" Value="True"/>
-                            </MultiTrigger.Conditions>
-                            <Setter Property="Stroke" Value="#FFEA5B5B" TargetName="BackEllipse"/>
-                        </MultiTrigger>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsMouseOver" Value="True"/>
-                                <Condition Property="IsChecked" Value="False"/>
-                            </MultiTrigger.Conditions>
-                            <Setter Property="Stroke" Value="GreenYellow" TargetName="BackEllipse"/>
-                        </MultiTrigger>
-                        <EventTrigger RoutedEvent="MouseLeave">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <ColorAnimation Duration="0:0:0.5" To="Transparent" Storyboard.TargetName="BackEllipse" Storyboard.TargetProperty="Stroke.Color"/>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation To="2" Duration="0:0:0.15" Storyboard.TargetName="BackEllipse" Storyboard.TargetProperty="StrokeThickness"/>
+                                        <DoubleAnimation To="18" Duration="0:0:0.2" Storyboard.TargetName="Text" Storyboard.TargetProperty="FontSize"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation To="0" Duration="0:0:0.7" Storyboard.TargetName="BackEllipse" Storyboard.TargetProperty="StrokeThickness"/>
+                                        <DoubleAnimation To="16" Duration="0:0:0.2" Storyboard.TargetName="Text" Storyboard.TargetProperty="FontSize"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
