@@ -165,8 +165,11 @@
                     <!--Блок с выбором переключения на приложение во время паузы и информацией при завершении печати-->
                     <Border Grid.Row="2">
                         <StackPanel>
-                            <CheckBox Margin="0 15 0 5" Grid.Row="3" IsChecked="{Binding ShouldChangeWindowOnPause, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="При паузе переключать на это приложение" Foreground="White" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Checked="SaveSettings" Unchecked="SaveSettings"/>
-                            <CheckBox Margin="0 5 0 15" Grid.Row="4" IsChecked="{Binding ShouldNotifyOnPrintComplete, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="Уведомлять о завершении печати" Foreground="White" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" VerticalContentAlignment="Center" Checked="SaveSettings" Unchecked="SaveSettings"/>
+                            <StackPanel.Resources>
+                                <ResourceDictionary Source="CustomControls/AnimatedCheckBox.xaml"/>
+                            </StackPanel.Resources>
+                            <CheckBox Style="{StaticResource AnimatedCheckBox}" Margin="0 15 0 5" Grid.Row="3" IsChecked="{Binding ShouldChangeWindowOnPause, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="При паузе переключать на это приложение" Grid.ColumnSpan="2" Checked="SaveSettings" Unchecked="SaveSettings"/>
+                            <CheckBox Style="{StaticResource AnimatedCheckBox}" Margin="0 5 0 15" Grid.Row="4" IsChecked="{Binding ShouldNotifyOnPrintComplete, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="Уведомлять о завершении печати" Grid.ColumnSpan="2" Checked="SaveSettings" Unchecked="SaveSettings"/>
                         </StackPanel>
                     </Border>
                 </Grid>
