@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:ClipboardTextTyper">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
     <Style TargetType="CheckBox" x:Key="AnimatedCheckBox">
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
@@ -10,6 +10,8 @@
                     <StackPanel Orientation="Horizontal">
                         <Ellipse x:Name="BackEllipse" Fill="Transparent" Width="25" Height="25" StrokeThickness="2" Stroke="Transparent">
                             <Ellipse.Style>
+                                
+                                <!--Анимация кружка при наведении-->
                                 <Style TargetType="Ellipse">
                                     <Style.Triggers>
                                         <EventTrigger RoutedEvent="MouseLeave">
@@ -31,6 +33,8 @@
                             </Ellipse.Style>
                         </Ellipse>
                         <Label Content="{TemplateBinding Content}" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                        
+                        <!--Визуальные состояния флажка-->
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="Common">
                                 <VisualState x:Name="Checked">
@@ -46,6 +50,8 @@
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
                     </StackPanel>
+                    
+                    <!--Смена цвета по нажатию-->
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter Property="Stroke" Value="#FFFFE802" TargetName="BackEllipse"/>

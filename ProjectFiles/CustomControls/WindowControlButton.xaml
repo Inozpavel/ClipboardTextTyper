@@ -3,9 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:ClipboardTextTyper"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="40" d:DesignWidth="40">
+    
         <Button x:Name="MainButton">
             <Button.Style>
                 <Style TargetType="Button">
@@ -13,6 +13,7 @@
                         <Setter.Value>
                             <ControlTemplate TargetType="Button">
                                 <Border x:Name="Border" BorderThickness="2" CornerRadius="3" Cursor="Hand" Background="{TemplateBinding Background}">
+                                
                                 <!--Визуальные состояния кнопки-->
                                 <VisualStateManager.VisualStateGroups>
                                     <VisualStateGroup Name="CommonStates">
@@ -32,6 +33,7 @@
                                         </VisualState>
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
+                                
                                 <!--Картинка на кнопке-->
                                 <Image>
                                     <Image.Style>
@@ -48,6 +50,7 @@
                                         </Style>
                                     </Image.Style>
                                 </Image>
+                                
                                 <!--Анимация при наведении мышки-->
                                 <Border.Style>
                                     <Style TargetType="Border">
@@ -77,4 +80,5 @@
                 </Style>
             </Button.Style>
         </Button>
+    
 </UserControl>
