@@ -15,7 +15,7 @@
                         </Storyboard>
                     </ControlTemplate.Resources>
                     <StackPanel Orientation="Horizontal">
-                        <Ellipse x:Name="BackEllipse" Fill="Transparent" Width="25" Height="25" StrokeThickness="0" Stroke="Transparent"/>
+                        <Ellipse x:Name="BackEllipse" Fill="Transparent" Width="30" Height="30" StrokeThickness="0" Stroke="Transparent"/>
                         <Label Name="Text" FontSize="17" Content="{TemplateBinding Content}" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                         
                         <!--Визуальные состояния флажка-->
