@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -6,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using System.Windows.Forms;
 
 namespace ClipboardTextTyper
@@ -182,7 +184,7 @@ namespace ClipboardTextTyper
 
         private static void Print()
         {
-            BufferText = FilterText(MainWindow.userSettings);
+            BufferText = FilterText(GetBufferText(), MainWindow.userSettings);
             if (BufferText == null)
                 return;
             try
@@ -221,8 +223,10 @@ namespace ClipboardTextTyper
 
                     ShowWindow(window.MainWindowHandle, SW_MINIMIZE);
                     SetForegroundWindow(window.MainWindowHandle);
+
                     MessageBox.Show($"Программа завершила печать, время печати:\n{resultTimeInfo}",
                         "Печать завершена", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                     ShowWindow(window.MainWindowHandle, SW_SHOWNORMAL);
                 }
             }
@@ -236,32 +240,48 @@ namespace ClipboardTextTyper
 
         }
 
-        private static char[] FilterText(SettingsViewModel settings)
+        private static char[] FilterText(string text, SettingsViewModel settings)
         {
-            string bufferText = Regex.Replace(GetBufferText() ?? "", @"\r", "");
+            text = Regex.Replace(text ?? "", @"\r", "");
 
-            System.Collections.Generic.List<string> spacesToDelete = Regex
+            string[] splittedText = text.Split('\n');
+
+            for (int i = 0; i < splittedText.Length; i++)
+            {
+                if (string.IsNullOrEmpty(splittedText[i]))
+                    continue;
+
+                int spacesAtStringStartCount = Regex.Matches(splittedText[i], "^    *")
+                .Cast<Match>().ToList()?[0]?.Length ?? 0;
+
+                splittedText[i] = new string('\t', spacesAtStringStartCount / 4) +
+                                  new string(' ', spacesAtStringStartCount % 4) +
+                                  splittedText[i].TrimStart(' ');
+            }
+            text = string.Join("\n", splittedText);
+
+            List<string> spacesToDelete = Regex
                 .Matches(settings.CharsToDelete, @"\s+")
                 .Cast<Match>().Select(x => x.Value).ToList();
 
             string symbolsToDelete = settings.CharsToDelete;
 
-            System.Collections.Generic.List<string> commonSymbols = string
+            List<string> commonSymbols = string
                 .Join("", Regex.Split(symbolsToDelete, @"\\\w")
                 .Where(x => !string.IsNullOrEmpty(x)).ToList())
                 .Select(x => x.ToString()).Where(x => x != " ").ToList();
 
-            System.Collections.Generic.List<string> spesialSymbols = Regex
+            List<string> spesialSymbols = Regex
                 .Matches(symbolsToDelete, @"\\\w")
                 .Cast<Match>().Select(x => x.Value).ToList();
 
-            System.Collections.Generic.IEnumerable<string> finalArrayToDelete = commonSymbols
-                .Union(spesialSymbols).Union(spacesToDelete);
+            List<string> finalArrayToDelete = commonSymbols
+                .Union(spesialSymbols).Union(spacesToDelete).ToList();
 
             foreach (string symbol in finalArrayToDelete)
-                bufferText = Regex.Replace(bufferText, symbol, "");
+                text = Regex.Replace(text, symbol, "");
 
-            return bufferText.ToArray();
+            return text.ToArray();
         }
 
         #endregion

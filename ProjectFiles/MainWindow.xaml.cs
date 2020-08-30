@@ -80,7 +80,7 @@ namespace ClipboardTextTyper
             TextTyper.KeysListening.Initialize();
             TextTyper.window = Process.GetProcessesByName("ClipboardTextTyper")[0];
             _startAnimation = WindowAnimationDictionary["WindowStartingAnimation"] as Storyboard;
-            _closingAnimation =WindowAnimationDictionary["WindowClosingAnimation"] as Storyboard;
+            _closingAnimation = WindowAnimationDictionary["WindowClosingAnimation"] as Storyboard;
             BeginStoryboard(_startAnimation);
         }
 
