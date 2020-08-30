@@ -142,7 +142,7 @@ namespace ClipboardTextTyper
 
         #region Methods working with text
 
-        private static string GetBufferText()
+        public static string GetBufferText()
         {
             if (IsClipboardFormatAvailable(CF_UNICODETEXT) == false)
                 return null;
@@ -240,7 +240,7 @@ namespace ClipboardTextTyper
 
         }
 
-        private static char[] FilterText(string text, SettingsViewModel settings)
+        public static char[] FilterText(string text, SettingsViewModel settings)
         {
             text = Regex.Replace(text ?? "", @"\r", "");
 
@@ -252,7 +252,7 @@ namespace ClipboardTextTyper
                     continue;
 
                 int spacesAtStringStartCount = Regex.Matches(splittedText[i], "^    *")
-                .Cast<Match>().ToList()?[0]?.Length ?? 0;
+                    .Cast<Match>().ToList().FirstOrDefault()?.Length ?? 0;
 
                 splittedText[i] = new string('\t', spacesAtStringStartCount / 4) +
                                   new string(' ', spacesAtStringStartCount % 4) +

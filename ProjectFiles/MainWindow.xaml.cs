@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Media.Animation;
 
 namespace ClipboardTextTyper
@@ -117,6 +119,44 @@ namespace ClipboardTextTyper
         private void SaveSettings(object sender, RoutedEventArgs e)
         {
             SettingsViewModel.SaveSetting(userSettings);
+        }
+
+        private void ShowTypingInfo(object sender, RoutedEventArgs e)
+        {
+            string resultInfo;
+            string text = Regex.Replace(TextTyper.GetBufferText() ?? "", @"\r", "");
+            int charsCount = text.Length;
+            int charsToPrintCount = TextTyper.FilterText(text, userSettings).Length;
+
+            if (charsToPrintCount == 0)
+            {
+                resultInfo =
+                $"Всего в буфере обмена символов текста: {charsCount}\n" +
+                $"Из них будет напечатано символов: {charsToPrintCount}\n\n" +
+                "Печатать нечего.";
+                System.Windows.MessageBox.Show(resultInfo, "Информация о печати",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            TimeSpan printTime;
+
+            if (userSettings.ShouldDelayBe)
+                printTime = new TimeSpan(0, 0, 0, charsToPrintCount * userSettings.DelayTime / 1000,
+                    (charsToPrintCount * userSettings.DelayTime) % 1000);
+            else
+                printTime = new TimeSpan(0, 0, 0, charsToPrintCount / 1000, charsToPrintCount % 1000);
+
+            resultInfo = $"Всего в буфере обмена символов текста: {charsCount}\n" +
+                $"Из них будет напечатано символов: {charsToPrintCount}\n" +
+                $"Примерное время печати:\n" +
+                (printTime.Hours.Equals(0) ? "" : $"Часы: {printTime.Hours}\n") +
+                (printTime.Minutes.Equals(0) ? "" : $"Минуты: {printTime.Minutes}\n") +
+                (printTime.Seconds.Equals(0) ? "" : $"Секунды: {printTime.Seconds}\n") +
+                (printTime.Milliseconds.Equals(0) ? "" : $"Милисекунды: {printTime.Milliseconds}\n");
+
+            System.Windows.MessageBox.Show(resultInfo, "Информация о печати",
+                MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }
