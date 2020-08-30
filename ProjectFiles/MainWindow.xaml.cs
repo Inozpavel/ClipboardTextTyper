@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 
 namespace ClipboardTextTyper
 {
@@ -13,8 +14,12 @@ namespace ClipboardTextTyper
     /// </summary>
     public partial class MainWindow : Window
     {
+        private Storyboard _startAnimation;
+        private Storyboard _closingAnimation;
+
         internal static SettingsViewModel userSettings;
         private bool _isAnimanting = false;
+        private bool _isClosing = false;
 
         public MainWindow()
         {
@@ -74,6 +79,9 @@ namespace ClipboardTextTyper
             RBShowTimeInput.IsChecked = userSettings.ShouldDelayBe;
             TextTyper.KeysListening.Initialize();
             TextTyper.window = Process.GetProcessesByName("ClipboardTextTyper")[0];
+            _startAnimation = WindowAnimationDictionary["WindowStartingAnimation"] as Storyboard;
+            _closingAnimation =WindowAnimationDictionary["WindowClosingAnimation"] as Storyboard;
+            BeginStoryboard(_startAnimation);
         }
 
 
@@ -89,7 +97,16 @@ namespace ClipboardTextTyper
 
         private void CloseApp(object sender, RoutedEventArgs e)
         {
-            Close();
+            if (_isClosing)
+                return;
+            _isClosing = true;
+            BeginStoryboard(_closingAnimation);
+
+            Task.Run(() =>
+            {
+                Thread.Sleep(1970);
+                Dispatcher.Invoke(() => Close());
+            });
         }
 
         private void MinimizeApp(object sender, RoutedEventArgs e)
