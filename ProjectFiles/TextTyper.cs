@@ -218,8 +218,14 @@ namespace ClipboardTextTyper
                 {
                     TimeSpan resultTime = stopwatch.Elapsed;
 
-                    string resultTimeInfo = string.Format("Часы:\t\t{0:00}\nМинуты:\t\t{1:00}\nСекунды:\t{2:00}\nМилисекунды:\t{3:000}",
-                        resultTime.Hours, resultTime.Minutes, resultTime.Seconds, resultTime.Milliseconds);
+                    string resultTimeInfo =
+                    (resultTime.Hours.Equals(0) ? "" : $"Часы:\t\t{resultTime.Hours}\n") +
+                    (resultTime.Minutes.Equals(0) ? "" : $"Минуты:\t\t{resultTime.Minutes}\n") +
+                    (resultTime.Seconds.Equals(0) ? "" : $"Секунды:\t\t{resultTime.Seconds}\n") +
+                    (resultTime.Milliseconds.Equals(0) ? "" : $"Милисекунды:\t\t{resultTime.Milliseconds}\n");
+
+                    if (resultTimeInfo == "")
+                        resultTimeInfo = "Меньше милисекунды";
 
                     ShowWindow(window.MainWindowHandle, SW_MINIMIZE);
                     SetForegroundWindow(window.MainWindowHandle);
