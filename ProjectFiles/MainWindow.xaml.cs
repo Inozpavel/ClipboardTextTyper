@@ -77,12 +77,16 @@ namespace ClipboardTextTyper
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
         {
-            RBHideTimeInput.IsChecked = !userSettings.ShouldDelayBe;
-            RBShowTimeInput.IsChecked = userSettings.ShouldDelayBe;
             TextTyper.KeysListening.Initialize();
             TextTyper.window = Process.GetProcessesByName("ClipboardTextTyper")[0];
             _startAnimation = WindowAnimationDictionary["WindowStartingAnimation"] as Storyboard;
             _closingAnimation = WindowAnimationDictionary["WindowClosingAnimation"] as Storyboard;
+            TimeInput.Opacity = userSettings.ShouldDelayBe ? 1 : 0;
+            _startAnimation.Completed += (x, y) =>
+            {
+                RBHideTimeInput.IsChecked = !userSettings.ShouldDelayBe;
+                RBShowTimeInput.IsChecked = userSettings.ShouldDelayBe;
+            };
             BeginStoryboard(_startAnimation);
         }
 
@@ -123,6 +127,7 @@ namespace ClipboardTextTyper
 
         private void ShowTypingInfo(object sender, RoutedEventArgs e)
         {
+            int oneLetterPrintTime = 23;
             string resultInfo;
             string text = Regex.Replace(TextTyper.GetBufferText() ?? "", @"\r", "");
             int charsCount = text.Length;
@@ -142,14 +147,15 @@ namespace ClipboardTextTyper
             TimeSpan printTime;
 
             if (userSettings.ShouldDelayBe)
-                printTime = new TimeSpan(0, 0, 0, charsToPrintCount * userSettings.DelayTime / 1000,
-                    (charsToPrintCount * userSettings.DelayTime) % 1000);
+                printTime = new TimeSpan(0, 0, 0, (charsToPrintCount * (userSettings.DelayTime + oneLetterPrintTime)) / 1000,
+                    (charsToPrintCount * (userSettings.DelayTime + oneLetterPrintTime)) % 1000);
             else
-                printTime = new TimeSpan(0, 0, 0, charsToPrintCount / 1000, charsToPrintCount % 1000);
+                printTime = new TimeSpan(0, 0, 0, charsToPrintCount * oneLetterPrintTime / 1000,
+                    charsToPrintCount * oneLetterPrintTime % 1000);
 
             resultInfo = $"Всего в буфере обмена символов текста: {charsCount}\n" +
                 $"Из них будет напечатано символов: {charsToPrintCount}\n" +
-                $"Примерное время печати:\n" +
+                $"Приблизительное время печати:\n" +
                 (printTime.Hours.Equals(0) ? "" : $"Часы: {printTime.Hours}\n") +
                 (printTime.Minutes.Equals(0) ? "" : $"Минуты: {printTime.Minutes}\n") +
                 (printTime.Seconds.Equals(0) ? "" : $"Секунды: {printTime.Seconds}\n") +
