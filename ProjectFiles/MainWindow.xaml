@@ -8,6 +8,7 @@
         Title="ClipboardTextTyper"
         WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="NoResize" Loaded="WindowLoaded" SizeToContent="WidthAndHeight">
     <Window.Resources>
+        
         <ResourceDictionary x:Name="WindowAnimationDictionary">
             
             <Storyboard x:Key="WindowStartingAnimation">
@@ -17,20 +18,21 @@
                     <LinearDoubleKeyFrame KeyTime="0:0:2" Value="1"/>
                 </DoubleAnimationUsingKeyFrames>
             </Storyboard>
-            
-                <Storyboard x:Key="WindowClosingAnimation">
-                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
-                        <LinearDoubleKeyFrame KeyTime="0:0:0" Value="1"/>
-                        <LinearDoubleKeyFrame KeyTime="0:0:1" Value="0.3"/>
-                        <LinearDoubleKeyFrame KeyTime="0:0:2" Value="0"/>
-                    </DoubleAnimationUsingKeyFrames>
-                </Storyboard>
+        
+            <Storyboard x:Key="WindowClosingAnimation">
+                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
+                    <LinearDoubleKeyFrame KeyTime="0:0:0" Value="1"/>
+                    <LinearDoubleKeyFrame KeyTime="0:0:1" Value="0.3"/>
+                    <LinearDoubleKeyFrame KeyTime="0:0:2" Value="0"/>
+                 </DoubleAnimationUsingKeyFrames>
+            </Storyboard>
             
         </ResourceDictionary>
        
     </Window.Resources>
     
     <Grid Background="#FF2D2D30" Name="test123">
+        
         <Grid.RowDefinitions>
             <RowDefinition x:Name="UpperBar" Height="34"/>
             <RowDefinition Height="Auto"/>
@@ -53,13 +55,17 @@
             
             <!--Панель с настройками-->
             <GroupBox Header="Настройки" Foreground="White" FontSize="17">
+                
                 <Grid>
+                    
                     <Grid.Resources>
+                        
                         <Style TargetType="Label">
                             <Setter Property="HorizontalAlignment" Value="Center"/>
                             <Setter Property="VerticalAlignment" Value="Center"/>
                             <Setter Property="Foreground" Value="White"/>
                         </Style>
+                        
                         <Style TargetType="Border">
                             <Setter Property="Background" Value="Transparent"/>
                             <Setter Property="BorderBrush">
@@ -93,6 +99,7 @@
                                 </EventTrigger>
                             </Style.Triggers>
                         </Style>
+                    
                     </Grid.Resources>
                     
                     <Grid.RowDefinitions>
@@ -103,17 +110,21 @@
                     
                     <!--Блок с задержкой-->
                     <Border>
+                        
                         <Grid>
+                            
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
+                            
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" Name="BiggestColumn"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
                             <Label Grid.Row="0" Content="Задержка при печати символа" FontSize="15" HorizontalAlignment="Center"/>
+                            
                             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10 5 10 0">
                                 <StackPanel.Resources>
                                     <ResourceDictionary Source="CustomControls/AnimatedRadioButton.xaml"/>
@@ -121,6 +132,7 @@
                                 <RadioButton GroupName="Delay" Name="RBHideTimeInput" Style="{StaticResource AnimatedRadioButton}" Content="Выключить"/>
                                 <RadioButton GroupName="Delay" Name="RBShowTimeInput" Style="{StaticResource AnimatedRadioButton}" Content="Включить" IsChecked="{Binding ShouldDelayBe,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="5 0 0 0" Checked="ShowTimeInputChecked" Unchecked="ShowTimeInputChecked"/>
                             </StackPanel>
+                            
                             <StackPanel Grid.Column="1" Name="TimeInput" Margin="0 3 0 5" Grid.Row="1">
                                 <TextBlock Text="{Binding ElementName=Slider, Path=Value, StringFormat={}{0} мс}" Foreground="White" HorizontalAlignment="Center"/>
                                 <Slider Name="Slider" VerticalAlignment="Top" Maximum="500" Minimum="2" Foreground="#FFCD2F2F" SmallChange="10" ValueChanged="SliderValueChanged" Value="{Binding Path=DelayTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="#FF454547" BorderThickness="2" Margin="10 0 10 0" TickFrequency="10" LargeChange="100" Background="#FF232222"/>
@@ -147,43 +159,63 @@
                                     </Style>
                                 </StackPanel.Style>
                             </StackPanel>
+                        
                         </Grid>
+                    
                     </Border>
                     
                     <!--Блок с символами для удаления и статусом печати-->
                     <Border Grid.Row="1">
+                        
                         <Grid>
+                            
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
+                            
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="{Binding BiggestColumn}"/>
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
+                            
                             <Label Content="Символы для удаления"/>
+                            
                             <Label Grid.Row="1" Content="Статус печати" Margin="0 0 0 3"/>
+                            
                             <TextBox Margin="0 7 0 5" Width="200" Grid.Column="1" FontSize="18"  Height="30" VerticalAlignment="Center" Foreground="White" Background="#FF454547" VerticalContentAlignment="Center" BorderThickness="2" Text="{Binding CharsToDelete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBoxTextChanged"/>
+                            
                             <Label Grid.Column="1" Grid.Row="1" Content="{Binding TypingStatus, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Margin="0 5 0 5"/>
+                        
+                        
                         </Grid>
                     </Border>
                     
                     <!--Блок с выбором переключения на приложение во время паузы и информацией при завершении печати-->
                     <Border Grid.Row="2" Height="110" Grid.RowSpan="2">
+                        
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            
                             <StackPanel.Resources>
                                 <ResourceDictionary Source="CustomControls/AnimatedCheckBox.xaml"/>
                             </StackPanel.Resources>
+                            
                             <CheckBox Style="{StaticResource AnimatedCheckBox}" Margin="0 0 0 7" Grid.Row="3" IsChecked="{Binding ShouldChangeWindowOnPause, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="При паузе открывать приложение" Grid.ColumnSpan="2" Checked="SaveSettings" Unchecked="SaveSettings"/>
                             <CheckBox Style="{StaticResource AnimatedCheckBox}" Margin="0 7 0 0" Grid.Row="4" IsChecked="{Binding ShouldNotifyOnPrintComplete, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="Уведомлять о завершении печати" Grid.ColumnSpan="2" Checked="SaveSettings" Unchecked="SaveSettings"/>
+                        
                         </StackPanel>
+                    
                     </Border>
+                
                 </Grid>
+            
             </GroupBox>
             
             <!--Панель с клавишами и их описанием-->
             <GroupBox Header="Сочетания клавиш" Foreground="White" FontSize="17" Grid.Column="1" Margin="1 0 0 0">
+                
                 <Grid>
+                    
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
@@ -199,43 +231,46 @@
                     </Grid.RowDefinitions>
                     
                     <Grid.Resources>
+                        
                         <Style  x:Key="Key" TargetType="TextBlock">
                             <Setter Property="Grid.Column" Value="1"/>
                             <Setter Property="TextAlignment" Value="Center"/>
                             <Setter Property="FontSize" Value="16"/>
                             <Setter Property="Margin" Value="10 5 10 5"/>
                         </Style>
+                        
                         <Style x:Key="Headling" TargetType="TextBlock">
                             <Setter Property="FontSize" Value="22"/>
                             <Setter Property="TextAlignment" Value="Center"/>
                             <Setter Property="Grid.ColumnSpan" Value="2"/>
                         </Style>
+                        
                         <Style x:Key="KeyDescription" TargetType="TextBlock">
                             <Setter Property="FontSize" Value="15"/>
                             <Setter Property="TextAlignment" Value="Left"/>
-                            <Setter Property="Margin" Value="0 5 0 5"/>
+                            <Setter Property="Margin" Value="5 5 0 5"/>
                         </Style>
+                        
                     </Grid.Resources>
                     
                     <!--Блок запуск копирования-->
                     <TextBlock Style="{StaticResource Headling}" Text="Запуск копирования"/>
+                    
                     <TextBlock Style="{StaticResource KeyDescription}" Grid.Row="1">
                         <Run Text="Начать печать"/>
                         <LineBreak/>
                         <Run Text="Завершить печать"/>
                     </TextBlock>
+                    
                     <TextBlock Style="{StaticResource Key}" Grid.Row="1">
-                        <Run Text="Shift"/>
-                        <Run Text="+"/>
-                        <Run Text="F4"/> 
+                        <Run Text="Shift + F4"/>
                         <LineBreak/>
-                        <Run Text="Shift"/>
-                        <Run Text="+"/>
-                        <Run Text="F2"/>
+                        <Run Text="Shift + F2"/>
                     </TextBlock>
                     
                     <!--Блок управление печатью-->
                     <TextBlock Grid.Row="2" Style="{StaticResource Headling}" Text="Управление печатью"/>
+                    
                     <TextBlock Style="{StaticResource KeyDescription}" Grid.Row="3">
                         <Run Text="Приостановить печать для выбора функции"/>
                         <LineBreak/>
@@ -243,32 +278,36 @@
                         <LineBreak/>
                         <Run Text="Продолжить печать"/>
                     </TextBlock>
+                    
                     <TextBlock Style="{StaticResource Key}" Grid.Row="3">
                         <Run Text="Shift"/>
                         <LineBreak/>
-                        <Run Text="Shift"/>
-                        <Run Text="+"/>
-                        <Run Text="F11"/>
+                        <Run Text="Shift + F11"/>
                         <LineBreak/>
-                        <Run Text="Shift"/>
-                        <Run Text="+"/>
-                        <Run Text="F12"/>
+                        <Run Text="Shift + F12"/>
                     </TextBlock>
                     
                     <!--Блок с управляющими символами-->
                     <TextBlock Style="{StaticResource Headling}" Text="Управляющие символы" Grid.Row="4"/>
+                    
                     <TextBlock Grid.Row="5" Style="{StaticResource KeyDescription}">
                         <Run Text="Горизонтальная табуляция"/>
                         <LineBreak/>
                         <Run Text="Переход на новую строку"/>
                     </TextBlock>
+                    
                     <TextBlock Style="{StaticResource Key}" Grid.Row="5">
                         <Run Text="\t"/>
                         <LineBreak/>
                         <Run Text="\n"/>
                     </TextBlock>
+                    
                 </Grid>
+                
             </GroupBox>
+            
         </Grid>
+        
     </Grid>
+    
 </Window>
