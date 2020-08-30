@@ -118,7 +118,11 @@
 
                     <!--Блок с задержкой-->
                     <Border>
-
+                        
+                        <Border.Resources>
+                            <ResourceDictionary Source="CustomControls/AnimatedButton.xaml"/>
+                        </Border.Resources>
+                        
                         <Grid>
 
                             <Grid.RowDefinitions>
@@ -140,6 +144,8 @@
                                 <RadioButton GroupName="Delay" Name="RBHideTimeInput" Style="{StaticResource AnimatedRadioButton}" Content="Выключить"/>
                                 <RadioButton GroupName="Delay" Name="RBShowTimeInput" Style="{StaticResource AnimatedRadioButton}" Content="Включить" IsChecked="{Binding ShouldDelayBe,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="5 0 0 0" Checked="ShowTimeInputChecked" Unchecked="ShowTimeInputChecked"/>
                             </StackPanel>
+
+                            <Button Style="{StaticResource AnimatedButton}" Margin="5 0 0 0" Content="Посчитать время печати" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Click="ShowTypingInfo"/>
 
                             <StackPanel Grid.Column="1" Name="TimeInput" Margin="0 3 0 5" Grid.Row="1">
                                 <TextBlock Text="{Binding ElementName=Slider, Path=Value, StringFormat={}{0} мс}" Foreground="White" HorizontalAlignment="Center"/>
