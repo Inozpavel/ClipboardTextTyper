@@ -64,7 +64,7 @@
                             <Setter Property="Background" Value="Transparent"/>
                             <Setter Property="BorderBrush">
                                 <Setter.Value>
-                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                    <LinearGradientBrush EndPoint="0, 0" StartPoint="0, 1">
                                         <GradientStop Color="Transparent" Offset="0"/>
                                         <GradientStop Color="Transparent" Offset="1"/>
                                     </LinearGradientBrush>
@@ -85,8 +85,8 @@
                                     <BeginStoryboard>
                                         <Storyboard>
                                             <Storyboard>
-                                                <ColorAnimation To="#00F260" Duration="0:0:0.25" Storyboard.TargetProperty="BorderBrush.GradientStops[0].Color"/>
-                                                <ColorAnimation To="#0575e6" Duration="0:0:0.25" Storyboard.TargetProperty="BorderBrush.GradientStops[1].Color"/>
+                                                <ColorAnimation To="DarkGray" Duration="0:0:0.25" Storyboard.TargetProperty="BorderBrush.GradientStops[0].Color"/>
+                                                <ColorAnimation To="Black" Duration="0:0:0.25" Storyboard.TargetProperty="BorderBrush.GradientStops[1].Color"/>
                                             </Storyboard>
                                         </Storyboard>
                                     </BeginStoryboard>
@@ -98,7 +98,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     
                     <!--Блок с задержкой-->
@@ -169,13 +169,13 @@
                     </Border>
                     
                     <!--Блок с выбором переключения на приложение во время паузы и информацией при завершении печати-->
-                    <Border Grid.Row="2" Height="120">
-                        <StackPanel>
+                    <Border Grid.Row="2" Height="110" Grid.RowSpan="2">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                             <StackPanel.Resources>
                                 <ResourceDictionary Source="CustomControls/AnimatedCheckBox.xaml"/>
                             </StackPanel.Resources>
-                            <CheckBox Style="{StaticResource AnimatedCheckBox}" Margin="0 15 0 5" Grid.Row="3" IsChecked="{Binding ShouldChangeWindowOnPause, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="При паузе открывать приложение" Grid.ColumnSpan="2" Checked="SaveSettings" Unchecked="SaveSettings"/>
-                            <CheckBox Style="{StaticResource AnimatedCheckBox}" Margin="0 10 0 15" Grid.Row="4" IsChecked="{Binding ShouldNotifyOnPrintComplete, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="Уведомлять о завершении печати" Grid.ColumnSpan="2" Checked="SaveSettings" Unchecked="SaveSettings"/>
+                            <CheckBox Style="{StaticResource AnimatedCheckBox}" Margin="0 0 0 7" Grid.Row="3" IsChecked="{Binding ShouldChangeWindowOnPause, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="При паузе открывать приложение" Grid.ColumnSpan="2" Checked="SaveSettings" Unchecked="SaveSettings"/>
+                            <CheckBox Style="{StaticResource AnimatedCheckBox}" Margin="0 7 0 0" Grid.Row="4" IsChecked="{Binding ShouldNotifyOnPrintComplete, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="Уведомлять о завершении печати" Grid.ColumnSpan="2" Checked="SaveSettings" Unchecked="SaveSettings"/>
                         </StackPanel>
                     </Border>
                 </Grid>
